@@ -42,8 +42,8 @@ function themeConfig($form) {
         "deep-orange"=>"深橘色"
     );
 
-    $primarycolor = new Typecho_Widget_Helper_Form_Element_Select('primaryColor',$primarycolors, _t('主题色'), _t('设置页面主题色'));
+    $primarycolor = new Typecho_Widget_Helper_Form_Element_Select('me_PrimaryColor',$primarycolors, _t('主题色'), _t('设置页面主题色'));
     $form->addInput($primarycolor);
-    $accentcolor = new Typecho_Widget_Helper_Form_Element_Select('accentColor',$accentcolors, _t('强调色'), _t('设置页面强调色'));
+    $accentcolor = new Typecho_Widget_Helper_Form_Element_Select('me_AccentColor',$accentcolors, _t('强调色'), _t('设置页面强调色'));
     $form->addInput($accentcolor);
 }
