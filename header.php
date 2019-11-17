@@ -1,4 +1,5 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<!DOCTYPE HTML>
 <html>
 <head>
 	<meta charset="<?php $this->options->charset(); ?>">
@@ -16,20 +17,22 @@
 	<script src="//cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script>
 	<style>
 		body{
-			height: 100%;
 			overflow: hidden;
 		}
-		#content-box{
+		#pjax-box{
 			overflow-y: auto;
+			height: 100vh;
 			overflow-x: hidden;
-			height: 92%;
-			padding-top:16px;
+		}
+		#content-box{	
+			padding-top: 30px;
+			padding-bottom: 50px;
+			min-height: calc(100% - 214px);
 		}
 		.footer-nav{
-			height: 100px;
+			min-height: 150px;
 		}
 		.card-archive{
-			margin-top: 30px;
 			margin-bottom: 30px;
 			max-width: 800px;
 		}
@@ -48,4 +51,4 @@
 		</div>
 	</div>
 	<?php $this->need('sidebar.php');?>
-	<div id="content-box">
+	<div id="pjax-box">

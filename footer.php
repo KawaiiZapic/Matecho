@@ -1,9 +1,11 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<div class="footer-nav mdui-color-theme mdui-container-fluid">
-        <div class="mdui-container">
-    <p class="mdui-float-right">233</p>
+            <div class="mdui-color-theme">
+                <div class="mdui-container footer-nav">
+                    <p class="mdui-float-right">233</p>
+                </div>
+            </div> 
+            <div class="mdui-toolbar mdui-color-theme"></div>
         </div>
-        </div> 
         <script>
             var $$ = mdui.JQ;
             var drawer_left = new mdui.Drawer("#drawer-left", {"swipe":true});

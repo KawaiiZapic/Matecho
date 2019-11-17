@@ -11,7 +11,7 @@
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  $this->need('header.php');
 ?>
-<div class="mdui-container">
+<div id="content-box" class="mdui-container">
 <?php while($this->next()): ?>
 	<div class="mdui-card card-archive mdui-center">
   <div class="mdui-card-media">
