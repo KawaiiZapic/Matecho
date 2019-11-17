@@ -16,8 +16,9 @@
 	<script src="//cdnjs.loli.net/ajax/libs/mdui/0.4.3/js/mdui.min.js"></script>
 	<script src="//cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script>
 	<style>
-		body{
-			overflow: hidden;
+		html{
+			position:fixed;
+			width:100%;
 		}
 		#pjax-box{
 			overflow-y: auto;
@@ -47,7 +48,7 @@
 			<a href="<?php $this->options->siteUrl(); ?>" class="mdui-typo-headline"><?php $this->options->title() ?></a>
 			<div class="mdui-toolbar-spacer"></div>
 			<a class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">search</i></a>
-			<a class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">more_vert</i></a>
+			<a href="<?php $this->options->siteUrl(); ?>admin" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">more_vert</i></a>
 		</div>
 	</div>
 	<?php $this->need('sidebar.php');?>

@@ -47,3 +47,10 @@ function themeConfig($form) {
     $accentcolor = new Typecho_Widget_Helper_Form_Element_Select('me_AccentColor',$accentcolors, _t('强调色'), _t('设置页面强调色'));
     $form->addInput($accentcolor);
 }
+
+function getGravatar($mail,$s = 40, $d = 'mp', $r = 'g'){
+    $url = '//cdn.v2ex.com/gravatar/';
+    $url .= md5( strtolower( trim( $mail ) ) );
+    $url .= "?s=$s&d=$d&r=$r";
+    return $url;
+}

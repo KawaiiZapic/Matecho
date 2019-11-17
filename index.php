@@ -19,7 +19,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
     <div class="mdui-card-media-covered">
       <div class="mdui-card-primary">
         <div class="mdui-card-primary-title" ><?php $this->title() ?></div>
-        <div class="mdui-card-primary-subtitle" style="word-break:break-all;"><?php $this->excerpt(100, '...'); ?></div>
+        <div class="mdui-card-primary-subtitle mdui-text-truncate"><?php $this->excerpt(100, '...'); ?></div>
       </div>
     </div>
   </div>
