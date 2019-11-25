@@ -37,11 +37,49 @@
 			margin-bottom: 30px;
 			max-width: 800px;
 		}
+		.go-out {
+    		opacity: 0;
+    		transform: scale(0.9);
+			filter: blur(10px);
+    		pointer-events: none;
+		}
+		.go-in {
+    		opacity: 1!important;
+    		transform: scale(1)!important;
+    		z-index: 100!important;
+			filter: blur(0px)!important;
+		}
 	</style>
-	<?php $this->header(); ?>
+	<script>
+            var $$ = mdui.JQ;
+            var drawer_left = new mdui.Drawer("#drawer-left", {"swipe":true});
+            $$("#btn-drawerctl").on("click",function(){drawer_left.toggle();});
+            $$(function(){
+			    pjax = new Pjax({ elements: ['a[href]:not(.cors)'],selectors: ['title', '#content-box','#drawer-items',"#footer"],cacheBust: false});
+				pjax._loadUrl = pjax.loadUrl;
+				pjax.cancelThis = false;
+				pjax.cancelEvent = false;
+				pjax.cancelRequest = function(){
+					this.cancelThis = true;
+					this.cancelEvent = true;
+				}
+				pjax.loadUrl = function(href, options) {
+  					pjax._loadUrl(href,options);
+					if(this.cancelThis){
+						this.abortRequest(this.request);
+						this.cancelThis = false;
+					}
+					
+				}
+				document.addEventListener('pjax:send', function () {if(pjax.cancelEvent){pjax.cancelEvent=false;return false;} $$('#pjax-box').addClass('go-out');$$('#swap').addClass("go-in");if($$('#is-sm-down').css('display') == "none"){var maindrawer = new mdui.Drawer('#main-drawer');maindrawer.close();}});
+				document.addEventListener('pjax:success', function () {if(pjax.cancelEvent){pjax.cancelEvent=false;return false;}$$('#pjax-box').removeClass('go-out');$$('#swap').removeClass("go-in");$$("#pjax-box")[0].scrollTop=0;mdui.mutation();});
+				document.addEventListener("pjax:error",function(){if(pjax.cancelEvent){pjax.cancelEvent=false;return false;} if(e.triggerElement.href !== undefined ){window.location=e.triggerElement.href;}else{mdui.alert('Unexpected Error.');}});
+			});
+		</script>
+	<?php $this->header();?>
 </head>
 
-<body class="mdui-theme-primary-<?php if ($this->options->me_PrimaryColor) echo $this->options->me_PrimaryColor; else echo "indigo"; ?> mdui-theme-accent-<?php if ($this->options->me_AccentColor) echo $this->options->me_AccentColor; else echo "pink"; ?> mdui-drawer-body-left mdui-appbar-with-toolbar">
+<body class="mdui-theme-primary-<?php echo $this->options->me_PrimaryColor; ?> mdui-theme-accent-<?php echo $this->options->me_AccentColor;?> mdui-drawer-body-left mdui-appbar-with-toolbar">
 	<div class="mdui-appbar mdui-appbar-fixed">
 		<div class="mdui-toolbar mdui-color-theme">
 			<a id="btn-drawerctl" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">menu</i></a>
@@ -52,4 +90,4 @@
 		</div>
 	</div>
 	<?php $this->need('sidebar.php');?>
-	<div id="pjax-box">
+	<div id="pjax-box" style="transition-duration: .25s;">
