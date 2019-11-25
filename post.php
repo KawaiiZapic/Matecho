@@ -58,10 +58,10 @@ $this->need('header.php');
 		</div>
 		<div class="mdui-card-content mdui-p-t-5">
 			<div class="mdui-typo">
-				<?php $this->content();?>
+                <?php $this->content();?>
 			</div>
 		</div>
-		<div class="mdui-typo"><hr></div>
+        <div class="mdui-typo"><hr></div>
 			<?php $this->need('comments.php');?>
 	</div>
 

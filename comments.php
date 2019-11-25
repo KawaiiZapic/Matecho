@@ -1,21 +1,10 @@
-<?php if (!defined('__TYPECHO_ROOT_DIR__')) {
-    exit;
-}
+<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit;
+$this->comments()->to($comments);
+function threadedComments($comments, $options) {
+    $commentLevelClass = $comments->levels == 1 ? '' : 'mdui-collapse-item-open';
+    $commentLevelClass .= $comments->levels > 1 ? ' micro-margin' : ' mdui-m-a-1'; 
+    $arrowLevelClass = $comments->levels > 3 ? ' mdui-hidden-xs-down' : '';
 ?>
-<?php $this->comments()->to($comments);?>
-<?php function threadedComments($comments, $options) {
-    $commentClass = '';
-    if ($comments->authorId) {
-        if ($comments->authorId == $comments->ownerId) {
-            $commentClass .= ' comment-by-author'; //如果是文章作者的评论添加 .comment-by-author 样式
-        } else {
-            $commentClass .= ' comment-by-user'; //如果是评论作者的添加 .comment-by-user 样式
-        }
-    }
-    $commentLevelClass = $comments->levels == 1 ? '' : 'mdui-collapse-item-open'; //评论层数大于0为子级，否则是父级
-    $commentLevelClass .= $comments->levels > 1 ? ' micro-margin' : ' mdui-m-a-1'; //评论层数大于0为子级，否则是父级
-    $arrowLevelClass = $comments->levels > 3 ? ' mdui-hidden-xs-down' : ''; //评论层数大于0为子级，否则是父级
-    ?>
 <div id="comment-<?php $comments->theId();?>" class="mdui-card mdui-collapse-item <?php echo $commentLevelClass; ?>">
     <div class="mdui-collapse-item-header" style="pointer-events:none">
         <div class="mdui-card-header" style="display:inline-block">
@@ -24,27 +13,26 @@
             <div class="mdui-card-header-subtitle"><?php $comments->date('Y-m-d H:i');?></div>
         </div>
         <a class="mdui-btn mdui-btn-icon mdui-float-right mdui-ripple arrow-btn<?php echo $arrowLevelClass; ?> ">
-            <div class="mdui-collapse-item-arrow" style="height:36px"><i
-                   class="mdui-icon material-icons">keyboard_arrow_down</i></div>
+            <div class="mdui-collapse-item-arrow" style="height:36px"><i class="mdui-icon material-icons">keyboard_arrow_down</i></div>
         </a>
     </div>
     <div class="mdui-collapse-item-body">
         <div class="mdui-card-contents mdui-p-x-2">
             <?php $comments->content();?>
         </div>
-        <?php if ($comments->children) {?>
-        <?php $comments->threadedComments($options);?>
-        <?php }?>
+        <?php if ($comments->children) $comments->threadedComments($options);?>
         <div class="mdui-card-actions">
             <button class="mdui-btn mdui-ripple mdui-float-right"><?php $comments->reply();?></button>
+            
         </div>
     </div>
 </div>
 <?php }?>
+
 <form class="mdui-card mdui-m-a-1" id="comment-form" role="form" method="post" action="<?php $this->commentUrl();?>">
 <?php if (!$this->allow('comment')): ?>
 <div class="mdui-valign disabled-overlay mdui-ripple">
-    <div class="mdui-center mdui-typo-headline mdui-text-color-theme-accent mdui-typo mdui-container mdui-text-center">评论已关闭</div>
+    <div class="mdui-center mdui-typo mdui-container mdui-text-center"><i class="mdui-icon material-icons mdui-typo-display-3-opacity mdui-text-color-theme-accent">&#xe92a;</i><div class="mdui-typo-subheading-opacity mdui-m-t-1">评论已关闭</div></div>
 </div>
 <?php endif;?>
     <div class="mdui-text-color-theme mdui-typo-headline mdui-m-t-3 mdui-m-l-2">添加评论</div>
@@ -84,7 +72,7 @@
         <button class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">&#xe7f2;</i></button>
     </div>
 </form>
-<?php $comments->listComments();?>
+<?php $comments->listComments("before=<div mdui-collapse>&after=</div>");?>
 <style>
     .comment-list {
         padding: 0px !important;
@@ -107,5 +95,4 @@
     }
 </style>
 <script>
-    $$(".comment-list").each(function (i, v) { new mdui.Collapse(v) });
 </script>
