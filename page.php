@@ -19,14 +19,12 @@ $this->need('header.php');
             </div>
             <div class=" mdui-m-t-2 mdui-float-right" style="display:inline-block!important">
 					<div class="mdui-chip mdui-hidden-sm-down mdui-float-right mdui-m-l-1"
-                    onclick="pjax.loadUrl('<?php $this->permalink();?>#comments')">
+                    onclick="scrollToAnchor('comments')">
                     <span class="mdui-chip-icon mdui-color-theme-accent"><i
                             class="mdui-icon material-icons">comment</i></span>
                     <span class="mdui-chip-title"><?php $this->commentsNum('无评论', '%d 条评论');?></span>
                 </div>
-
             </div>
-
         </div>
 		<div class="mdui-card-media ">
 			<div
@@ -46,7 +44,6 @@ $this->need('header.php');
 		<div class="mdui-typo"><hr></div>
 			<?php $this->need('comments.php');?>
 	</div>
-
 </div>
 
 <?php $this->need('footer.php');?>

@@ -19,7 +19,7 @@ $this->need('header.php');
             </div>
             <div class=" mdui-m-t-2 mdui-float-right" style="display:inline-block!important">
 					<div class="mdui-chip mdui-hidden-sm-down mdui-float-right mdui-m-x-1 "
-                    onclick="pjax.loadUrl('<?php $this->permalink();?>#comments')">
+                    onclick="scrollToAnchor('comments')">
                     <span class="mdui-chip-icon mdui-color-theme-accent"><i
                             class="mdui-icon material-icons">comment</i></span>
                     <span class="mdui-chip-title"><?php $this->commentsNum('无评论', '%d 条评论');?></span>
