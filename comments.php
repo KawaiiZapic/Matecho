@@ -1,13 +1,11 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->comments()->to($comments);
-
 function threadedComments($comments, $options) {
     $commentLevelClass = $comments->levels == 1 ? '' : 'mdui-collapse-item-open';
     $commentLevelClass .= $comments->levels == 0 ? ' topLevelComment ' : '';
     $commentLevelClass .= $comments->levels > 1 ? ' micro-margin' : 'mdui-m-a-1'; 
     $arrowLevelClass = $comments->levels > 3 ? ' mdui-hidden-xs-down' : '';
 ?>
-<pre><?php //var_dump($comments);?></pre>
 <div id="<?php $comments->theId();?>" class="mdui-card mdui-collapse-item <?php echo $commentLevelClass; ?>">
     <div class="mdui-collapse-item-header" style="pointer-events:none">
         <div class="mdui-card-header" style="display:inline-block">
@@ -25,8 +23,9 @@ function threadedComments($comments, $options) {
         </div>
         <?php if ($comments->children) $comments->threadedComments($options);?>
         <div class="mdui-card-actions">
-            <button class="mdui-btn mdui-ripple mdui-float-right"><?php $comments->reply();?></button>
-            
+            <div id="reply-<?php $comments->theId();?>"></div>
+            <button class="mdui-btn mdui-ripple mdui-float-right replyButton" onclick="replyTo('<?php $comments->theId();?>')">回复</button>
+
         </div>
     </div>
 </div>
@@ -44,35 +43,36 @@ function threadedComments($comments, $options) {
     <?php else: ?>
     <div class="mdui-m-x-1 mdui-row">
             <div class="mdui-textfield mdui-textfield-floating-label mdui-col-sm-4 mdui-col-xs-12">
-                <img class="mdui-card-header-avatar mdui-icon" src="https://cdn.v2ex.com/gravatar/0?s=40&d=mp&r=g" />
+                <div id="avatar-loading" class="mdui-spinner mdui-card-header-avatar mdui-m-t-2 mdui-m-l-1 mdui-hidden"></div>
+                <img id="reply-avatar" class="mdui-card-header-avatar mdui-icon" src="https://cdn.v2ex.com/gravatar/0?s=40&d=mp&r=g" />
                 <label class="mdui-textfield-label">Email</label>
-                <input class="mdui-textfield-input" name="mail" id="mail" type="email" value="<?php $this->remember('mail');?>"<?php if ($this->options->commentsRequireMail): ?> required<?php endif;?> <?php if (!$this->allow('comment')) echo "disabled"; ?>/>
+                <input class="mdui-textfield-input" name="mail" id="reply-mail" type="email" value="<?php $this->remember('mail');?>"<?php if ($this->options->commentsRequireMail): ?> required<?php endif;?> <?php if (!$this->allow('comment')) echo "disabled"; ?>/>
                 <div class="mdui-textfield-error">无效邮箱</div>
                 <div class="mdui-textfield-helper"><?php echo $this->options->commentsRequireMail? "必" : "选" ?>填,用于发送回复邮件.</div>
             </div>
             <div class="mdui-textfield mdui-textfield-floating-label mdui-col-sm-4 mdui-col-xs-6">
                 <label class="mdui-textfield-label">昵称</label>
-                <input class="mdui-textfield-input" name="author" id="author" maxlength="30" value="<?php $this->remember('author');?>" required <?php if (!$this->allow('comment')) echo "disabled"; ?>/>
+                <input class="mdui-textfield-input" name="author" id="reply-author" maxlength="30" value="<?php $this->remember('author');?>" required <?php if (!$this->allow('comment')) echo "disabled"; ?>/>
                 <div class="mdui-textfield-helper">必填,最多30个字符</div>
             </div>
             <div class="mdui-textfield mdui-textfield-floating-label mdui-col-sm-4 mdui-col-xs-6">
                 <label class="mdui-textfield-label">博客网址</label>
-                <input class="mdui-textfield-input" type="url" name="url" id="url" value="<?php $this->remember('url');?>" <?php if ($this->options->commentsRequireURL): ?> required<?php endif;?> <?php if (!$this->allow('comment')) echo "disabled"; ?>/>
+                <input class="mdui-textfield-input" type="url" name="url" id="reply-url" value="<?php $this->remember('url');?>" <?php if ($this->options->commentsRequireURL): ?> required<?php endif;?> <?php if (!$this->allow('comment')) echo "disabled"; ?>/>
                 <div class="mdui-textfield-error">无效网址</div>
                 <div class="mdui-textfield-helper"><?php echo $this->options->commentsRequireURL? "必" : "选" ?>填</div>
             </div>
     </div>
     <?php endif;?>
     <div class="mdui-card-content">
-        <div class="mdui-textfield mdui-textfield-floating-label">
+        <div id="reply-label" class="mdui-textfield mdui-textfield-floating-label">
             <i class="mdui-icon material-icons">textsms</i>
             <label class="mdui-textfield-label">内容</label>
-            <textarea class="mdui-textfield-input" name="text" id="textarea" class="textarea" required <?php if (!$this->allow('comment')) echo "disabled"; ?>><?php $this->remember('text');?></textarea>
+            <textarea class="mdui-textfield-input" name="text" id="reply-textarea" class="textarea" required <?php if (!$this->allow('comment')) echo "disabled"; ?>><?php $this->remember('text');?></textarea>
             <div class="mdui-textfield-error">内容不得为空</div>
         </div>
     </div>
     <div class="mdui-card-actions">
-        <button type="submit" class="mdui-btn mdui-ripple mdui-float-right">回复</button>
+        <button type="submit" id="submit-btn" class="mdui-btn mdui-ripple mdui-float-right">回复</button>
         <button type="button" mdui-menu="{target: '#smile-menu','position':'top'}" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">&#xe7f2;</i></button>
         <ul class="mdui-menu mdui-menu-cascade mdui-p-t-0" id="smile-menu">
         <div class="mdui-tab mdui-tab-centered mdui-tab-scrollable mdui-p-l-0" mdui-tab>
@@ -94,11 +94,13 @@ function threadedComments($comments, $options) {
     
 </form>
 <?php 
-$comments->listComments("before=<div id=\"comment-area\" mdui-collapse>&after=</div>");
+
 if($this->options->commentsPageDisplay=="last"){
-    $comments->pageNav('加载更多评论','',0,'',array('wrapTag' => 'div','wrapClass' => 'page-navigator mdui-p-a-3','itemTag' => '','prevClass' => 'prev-btn comment-show-btn mdui-btn-raised mdui-btn mdui-btn-block mdui-ripple mdui-color-theme-accent'));
+    $comments->pageNav('反向加载更多评论','',0,'',array('wrapTag' => 'div','wrapClass' => 'page-navigator mdui-p-a-2','itemTag' => '','prevClass' => 'prev-btn comment-show-btn mdui-btn-raised mdui-btn mdui-btn-block mdui-ripple mdui-color-theme-accent'));
+    $comments->listComments("before=<div id=\"comment-area\" mdui-collapse>&after=</div>");
 }else{
-    $comments->pageNav('','加载更多评论',0,'',array('wrapTag' => 'div','wrapClass' => 'page-navigator mdui-p-a-3','itemTag' => '','nextClass' => 'next-btn comment-show-btn mdui-btn-raised mdui-btn mdui-btn-block mdui-ripple mdui-color-theme-accent'));
+    $comments->listComments("before=<div id=\"comment-area\" mdui-collapse>&after=</div>");
+    $comments->pageNav('','加载更多评论',0,'',array('wrapTag' => 'div','wrapClass' => 'page-navigator mdui-p-a-2','itemTag' => '','nextClass' => 'next-btn comment-show-btn mdui-btn-raised mdui-btn mdui-btn-block mdui-ripple mdui-color-theme-accent'));
 }
 ?>
 <style>
@@ -121,6 +123,11 @@ if($this->options->commentsPageDisplay=="last"){
     background: rgba(255, 255, 255, 0.9);
     z-index: 999;
     }
+    .comment-into{
+        transform: scale(0.7);
+        opacity: 0;
+        margin-bottom: -170px!important;
+    }
 </style>
 <?php if ($this->options->commentsAntiSpam && $this->is('single')) {?>
     <!-- AntiSpam -->
@@ -129,10 +136,16 @@ if($this->options->commentsPageDisplay=="last"){
     $$(document).one("keyup touchstart mousemove",function(){
         var anti_token = <?php echo Typecho_Common::shuffleScriptVar($this->security->getToken($this->request->getRequestUrl()));?>;
         $$("#anti-spam-token").val(anti_token);
-    })
+    });
 </script>
 <?php } ?>
 <script>
+$$("#reply-mail").on("blur",function(){
+    var email = md5($$(this).val());
+    var url = "//cdn.v2ex.com/gravatar/"+email+"?s=40&d=mp&r=g";
+    $$("#avatar-loading").removeClass("mdui-hidden");
+    $$("#reply-avatar").attr("src",url).addClass("mdui-hidden").one("load",function(){$$("#avatar-loading").addClass("mdui-hidden");$$(this).removeClass("mdui-hidden");});
+});
 $$("#<?php echo $this->respondId;?>").on("submit",function(e){
     e.preventDefault();
     var commentform=this;
@@ -141,8 +154,20 @@ $$("#<?php echo $this->respondId;?>").on("submit",function(e){
         'method':'post',
         'url':$$(commentform).attr("action"),
         'data':$$(commentform).serialize(),
+        beforeSend: function(){
+            $$("#submit-btn").html('<div class="mdui-spinner"></div>').attr("disabled","true");
+            mdui.mutation();
+        },
+        complete: function(){
+            $$("#submit-btn").html('回复').removeAttr("disabled");
+        },
         success: function (data) {
-            
+            $$("#reply-textarea").val("");
+            $$("#reply-label").removeClass("mdui-textfield-not-empty");
+            mdui.snackbar("评论已提交.");
+        },
+        error: function(){
+            mdui.snackbar({"message":"未能提交评论.","buttonText":"重试","closeOnOutsideClick":false,"onButtonClick":function(){$$("#submit-btn").trigger("click");}});
         }
     })
     });
@@ -153,7 +178,7 @@ $$(".prev-btn").on("click",function(e){
     mdui.mutation("#comment-loading");
     $$(".page-navigator").hide();
     scrollToAnchor("comment-loading");
-    loadElfromAjax(url,function(el){$$("#comment-area").prepend(el[0]);$$("#comment-loading").remove();if($$(el[1]).attr("href")!==undefined){$$(".prev-btn").attr("href",$$(el[1]).attr("href"));$$(".page-navigator").show();}else{$$(".page-navigator").remove();}mdui.mutation();},".topLevelComment",".prev-btn");
+    loadElfromAjax(url,function(el){el[0]=IntoAniPre(el[0]);$$("#comment-area").prepend(el[0]);$$(".comment-into").transition(".25s").each(function(i,v){setTimeout(function(){$$(v).removeClass("comment-into");},25*i);});$$("#comment-loading").remove();if($$(el[1]).attr("href")!==undefined){$$(".prev-btn").attr("href",$$(el[1]).attr("href"));$$(".page-navigator").show();}else{$$(".page-navigator").remove();}mdui.mutation();},".topLevelComment",".prev-btn");
 });
 $$(".next-btn").on("click",function(e){
     e.preventDefault();
@@ -162,7 +187,7 @@ $$(".next-btn").on("click",function(e){
     mdui.mutation("#comment-loading");
     $$(".page-navigator").hide();
     scrollToAnchor("comment-loading");
-    loadElfromAjax(url,function(el){$$("#comment-area").append(el[0]);$$("#comment-loading").remove();if($$(el[1]).attr("href")!==undefined){$$(".next-btn").attr("href",$$(el[1]).attr("href"));$$(".page-navigator").show();}else{$$(".page-navigator").remove();}mdui.mutation();},".topLevelComment",".next-btn");
+    loadElfromAjax(url,function(el){el[0]=IntoAniPre(el[0]);$$("#comment-area").append(el[0]);$$(".comment-into").transition(".25s").each(function(i,v){setTimeout(function(){$$(v).removeClass("comment-into");},25*i);});$$("#comment-loading").remove();if($$(el[1]).attr("href")!==undefined){$$(".next-btn").attr("href",$$(el[1]).attr("href"));$$(".page-navigator").show();}else{$$(".page-navigator").remove();}mdui.mutation();},".topLevelComment",".next-btn");
 });
 function loadElfromAjax(){
     if(arguments.length < 3) return false;
@@ -186,5 +211,15 @@ function loadElfromAjax(){
             
         }
     });
+}
+function IntoAniPre(el){
+    $$.each(el,function(i,v){$$(v).addClass("comment-into");});
+    return el;
+}
+function replyTo(comm){
+    var url = "<?php $this->permalink();?>";
+    var id= comm.split("-")[1];
+    var replyUrl = url+"?replyTo="+id;
+    
 }
 </script>

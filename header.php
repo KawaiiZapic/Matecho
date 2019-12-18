@@ -16,8 +16,8 @@
 	<script src="//cdnjs.loli.net/ajax/libs/mdui/0.4.3/js/mdui.min.js"></script>
 	<script src="//cdnjs.loli.net/ajax/libs/smoothscroll/1.4.9/SmoothScroll.min.js"></script>
 	<script src="//cdnjs.loli.net/ajax/libs/iamdustan-smoothscroll/0.4.0/smoothscroll.min.js"></script>
+	<script src="//cdnjs.loli.net/ajax/libs/blueimp-md5/2.9.0/js/md5.min.js"></script>
 	<script src="//cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script>
-
 	<style>
 		html{
 			position:fixed;
