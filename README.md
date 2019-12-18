@@ -8,3 +8,10 @@ Material Design typecho theme base on MDUI.
 突然开坑(雾
 
 随机头图资源借自[viosey/typecho-theme-material](https://github.com/viosey/typecho-theme-material/tree/master/img/random),侵删.
+- [x] PJAX翻页
+- [ ] 主页面
+- [ ] AJAX评论
+- [ ] 侧栏完善
+- [ ] 顶栏完善
+- [ ] ExSearch融合支持
+- [ ] Meeting融合支持
