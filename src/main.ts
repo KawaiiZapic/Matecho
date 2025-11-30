@@ -74,6 +74,11 @@ function ExSearchIntegration(pjax: Pjax) {
 }
 
 function initOnce() {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => initOnce());
+    return;
+  }
+  
   document.querySelector("#m-loading-wrapper")?.remove();
   // app bar title will have animation in first time loaded
   setTimeout(() => {
@@ -86,8 +91,7 @@ function initOnce() {
   const topBtn = document.querySelector<Button>("#matecho-drawer-btn");
   const mainWrapper = document.querySelector<LayoutMain>("#matecho-main");
 
-  if (!drawer || !topBtn || !mainWrapper)
-    throw Error("Required element not found.");
+  if (!drawer || !topBtn || !mainWrapper) return;
 
   topBtn.addEventListener("click", () => {
     drawer.open = !drawer.open;
@@ -463,11 +467,7 @@ export async function sendComment(
   }
 }
 
-if (document.readyState !== "loading") {
-  initOnce();
-} else {
-  document.addEventListener("DOMContentLoaded", () => initOnce());
-}
+initOnce();
 console.log(
   `%c Matecho %c By Zapic \n`,
   "color: #fff; background: #E91E63; padding:5px 0;",
