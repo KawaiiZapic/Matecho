@@ -2,6 +2,11 @@ import { initKaTeX, initMermaid, initPrism, initShiki } from "./post";
 import "@/style/editor.less";
 
 function init() {
+  if (import.meta.env.DEV) {
+    // Unocss is conflict with typecho default stylesheet
+    // this is not happening in production because all unocss classes is mangled
+    document.querySelector("style[data-vite-dev-id='/__uno.css']")?.remove();
+  }
   const int = setInterval(() => {
     const preview = document.querySelector<HTMLDivElement>("#wmd-preview");
     if (!preview) return;
