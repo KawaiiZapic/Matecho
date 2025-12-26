@@ -25,7 +25,6 @@
     "eslint-plugin-prettier": "^5.5.4",
     "fast-glob": "^3.3.3",
     "http-proxy": "^1.18.1",
-    "husky": "^9.1.7",
     "katex": "^0.16.27",
     "less": "^4.5.1",
     "lint-staged": "^16.2.7",
@@ -39,6 +38,7 @@
     "prettier": "^3.7.4",
     "prismjs": "^1.30.0",
     "shiki": "^3.20.0",
+    "simple-git-hooks": "^2.13.1",
     "stylelint": "^16.26.1",
     "stylelint-config-standard": "^39.0.1",
     "stylelint-less": "^3.0.1",
@@ -50,10 +50,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "prepare": "husky",
+    "prepare": "simple-git-hooks",
     "type-check": "tsc --noEmit",
     "lint": "eslint --max-warnings 0 . && stylelint --max-warnings 0 **/*.{c,le}ss",
     "lint:fix": "eslint --max-warnings 0 --fix . && stylelint --max-warnings 0 --fix **/*.{c,le}ss && prettier --write -u --log-level silent ."
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
   },
   "lint-staged": {
     "*.{js,ts}": [
