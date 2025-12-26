@@ -78,7 +78,7 @@ function initOnce() {
     document.addEventListener("DOMContentLoaded", () => initOnce());
     return;
   }
-  
+
   document.querySelector("#m-loading-wrapper")?.remove();
   // app bar title will have animation in first time loaded
   setTimeout(() => {

@@ -1,0 +1,15 @@
+diff --git a/dist/mermaid.core.mjs b/dist/mermaid.core.mjs
+index cc62f180cbe914668b99f338a0e14968addabce4..65b4cd90487ecceea176c2947dc44e0c41fa152f 100644
+--- a/dist/mermaid.core.mjs
++++ b/dist/mermaid.core.mjs
+@@ -1041,8 +1041,9 @@ var render = /* @__PURE__ */ __name(async function(id28, text, svgContainingElem
+   const firstChild = svg.firstChild;
+   const diagramClassDefs = diag.renderer.getClasses?.(text, diag);
+   const rules = createUserStyles(config, diagramType, diagramClassDefs, idSelector);
++  const rulesDark = createUserStyles({...config, themeVariables: themes_default.dark.getThemeVariables({})}, diagramType, diagramClassDefs, idSelector);
+   const style1 = document.createElement("style");
+-  style1.innerHTML = rules;
++  style1.innerHTML = rules + `@media (prefers-color-scheme: dark) {${rulesDark}}`;
+   svg.insertBefore(style1, firstChild);
+   try {
+     await diag.renderer.draw(text, id28, package_default.version, diag);

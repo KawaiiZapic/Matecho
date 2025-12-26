@@ -30,6 +30,7 @@
 import type { SourceCodeTransformer } from "@unocss/core";
 import { expandVariantGroup } from "@unocss/core";
 
+const regex = new RegExp(`class=(["'\`])([^\\1]+?)\\1`, "g");
 export interface CompileClassOptions {
   /**
    * Prefix for compile class name
@@ -57,7 +58,7 @@ export interface CompileClassOptions {
   /**
    * Skip file that may cause problem
    */
-  skip?: [];
+  skip?: string[];
 }
 
 export default function transformerCompileClass(
@@ -69,12 +70,12 @@ export default function transformerCompileClass(
     keepUnknown = true,
     skip = []
   } = options;
-  const regex = new RegExp(`class=(["'\`])([^\\1]+?)\\1`, "g");
+  const compiledClass = new Set();
 
   return {
-    name: "compile-class",
+    name: "@unocss/transformer-compile-class",
     enforce: "pre",
-    async transform(s, _, { uno, tokens }) {
+    async transform(s, _, { uno, tokens, invalidate }) {
       // Do not handle index.html file processed by vite
       if (_ === "index.html") {
         return;
@@ -85,6 +86,7 @@ export default function transformerCompileClass(
 
       const matches = [...s.original.matchAll(regex)];
       if (!matches.length) return;
+      const size = compiledClass.size;
       for (const match of matches) {
         let body = expandVariantGroup(match[2].trim());
         const start = match.index;
@@ -101,11 +103,13 @@ export default function transformerCompileClass(
             .filter(([, matched]) => !matched)
             .map(([i]) => i);
           replacements.push(...unknown);
+          // just sort it: unocss/unocss#4845
           body = known.sort().join(" ");
         }
         if (body) {
           const hash = hashFn(body);
           const className = `${classPrefix}${hash}`;
+          compiledClass.add(className);
           replacements.unshift(className);
           if (options.layer)
             uno.config.shortcuts.push([
@@ -122,6 +126,7 @@ export default function transformerCompileClass(
           replacements.join(" ")
         );
       }
+      if (compiledClass.size > size) invalidate();
     }
   };
 }

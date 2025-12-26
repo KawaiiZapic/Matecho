@@ -47,7 +47,9 @@ const handleLinkApplication = () => {
     linksAddFab.extended = breakpoint().up("sm");
   });
 
-  document.querySelector("#matecho-pjax-main")?.after(linksAddFab.parentElement!);
+  document
+    .querySelector("#matecho-pjax-main")
+    ?.after(linksAddFab.parentElement!);
   document.addEventListener(
     "pjax:send",
     () => {
@@ -79,12 +81,8 @@ const handleLinkApplication = () => {
   const avatarPreview = document.querySelector<HTMLImageElement>(
     "#matecho-link-preview__avatar"
   );
-  const cancelBtn = document.querySelector<Button>(
-    "#matecho-links-add-cancel"
-  );
-  const submitBtn = document.querySelector<Button>(
-    "#matecho-links-add-submit"
-  );
+  const cancelBtn = document.querySelector<Button>("#matecho-links-add-cancel");
+  const submitBtn = document.querySelector<Button>("#matecho-links-add-submit");
   if (
     !author ||
     !mail ||

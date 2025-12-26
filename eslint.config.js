@@ -15,9 +15,9 @@ export default [
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
-          caughtErrorsIgnorePattern: "^_$",
+          caughtErrorsIgnorePattern: "^_$"
         }
-      ],
+      ]
     },
     languageOptions: {
       ecmaVersion: "latest",
@@ -26,16 +26,12 @@ export default [
         project: ["tsconfig.json", "tsconfig.node.json", "tsconfig.cjs.json"]
       }
     }
-  }, {
-    ignores: [
-      "dist/**/*",
-      "node_modules/**/*"
-    ]
-  }, {
-    files: [
-      ".stylelintrc.cjs",
-      "postcss.config.cjs"
-    ], 
+  },
+  {
+    ignores: ["dist/**/*", "node_modules/**/*"]
+  },
+  {
+    files: [".stylelintrc.cjs", "postcss.config.cjs"],
     languageOptions: {
       sourceType: "commonjs"
     },
@@ -44,4 +40,3 @@ export default [
     }
   }
 ];
-

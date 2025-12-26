@@ -42,6 +42,12 @@ const createTransformProxy = (
     }
     res.statusCode = proxyRes.statusCode;
 
+    // vite will throw a error if request a file ends with .json and content is not json
+    if (req.url.endsWith(".json") && proxyRes.statusCode >= 400) {
+      res.end("");
+      return;
+    }
+
     if (!proxyRes.headers["content-type"]?.startsWith("text/html")) {
       proxyRes.pipe(res);
       return;
@@ -132,7 +138,10 @@ export default (config?: MatechoPluginConfig): Plugin => {
                   .startsWith("<!DOCTYPE HTML>")
               ) {
                 try {
-                  return await server.transformIndexHtml(req.url, html);
+                  return await server.transformIndexHtml(
+                    req.url, 
+                    html.replaceAll("<%= CommitID %>", (config.CommitID ?? "unknown") + "-dev")
+                  );
                 } catch (e) {
                   console.error(e);
                   if (e instanceof Error) {
@@ -164,12 +173,15 @@ export default (config?: MatechoPluginConfig): Plugin => {
         });
       };
     },
-    resolveId(id) {
-      if (id.endsWith(".php")) {
-        return id.replace(".php", "_actual_php.html");
-      }
-      if (id.startsWith("virtual:components")) {
-        return id;
+    resolveId: {
+      order: "pre",
+      handler(id) {
+        if (id.endsWith(".php")) {
+          return id.replace(".php", "_actual_php.html");
+        }
+        if (id.startsWith("virtual:components")) {
+          return id;
+        }
       }
     },
     async load(id) {
@@ -218,8 +230,7 @@ export default (config?: MatechoPluginConfig): Plugin => {
       }
     },
     transformIndexHtml(html, ctx) {
-      let r = html
-      .replaceAll(
+      let r = html.replaceAll(
         "<%= CompatibilityUserAgentRegex %>",
         JSON.stringify(
           getUserAgentRegex({

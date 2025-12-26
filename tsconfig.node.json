@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "composite": true,
+    "emitDeclarationOnly": true,
     "module": "ESNext",
     "target": "ESNext",
     "lib": ["ESNext"],
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "allowJs": true,

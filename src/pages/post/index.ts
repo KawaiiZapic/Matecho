@@ -13,8 +13,8 @@ function initFancybox(container: HTMLElement) {
     import("@fancyapps/ui/dist/fancybox/fancybox.css"),
     Promise.all([
       import("@fancyapps/ui"),
-      import("@fancyapps/ui/l10n/Fancybox/zh_CN")
-    ]).then(([{ Fancybox: fb }, { zh_CN }]) => {
+      import("@fancyapps/ui/dist/fancybox/l10n/en_EN")
+    ]).then(([{ Fancybox: fb }, { en_EN }]) => {
       container.querySelectorAll<HTMLImageElement>("img").forEach(v => {
         v.setAttribute("data-fancybox", "article");
         if (v.alt ?? v.title) {
@@ -22,7 +22,7 @@ function initFancybox(container: HTMLElement) {
         }
       });
       fb.bind("[data-fancybox]", {
-        l10n: zh_CN
+        l10n: en_EN
       });
     })
   ]);

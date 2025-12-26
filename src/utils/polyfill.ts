@@ -22,7 +22,7 @@ if (!HTMLSlotElement.prototype.assignedElements) {
   HTMLSlotElement.prototype.assignedElements = function (...args) {
     return HTMLSlotElement.prototype.assignedNodes
       .apply(this, args)
-      .filter(n => n instanceof Element) as Element[];
+      .filter(n => n instanceof Element);
   };
 }
 

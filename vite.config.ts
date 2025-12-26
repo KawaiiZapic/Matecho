@@ -56,6 +56,7 @@ export default defineConfig(async env => {
   return {
     plugins: [
       unocss({
+        //@ts-expect-error ???
         transformers: isBuild && [
           UnoCSSClassMangle({
             classPrefix: "m-"
