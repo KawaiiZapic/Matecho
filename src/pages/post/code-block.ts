@@ -319,16 +319,18 @@ export async function loadShiki() {
   const [
     { createdBundledHighlighter },
     { bundledThemes },
-    { createOnigurumaEngine }
+    { createOnigurumaEngine },
+    wasmInit
   ] = await Promise.all([
     import("shiki/core"),
     import("shiki/themes"),
-    import("shiki/engine-oniguruma.mjs")
+    import("shiki/engine/oniguruma"),
+    import("shiki/onig.wasm?init")
   ]);
   shikiInst = await createdBundledHighlighter({
     langs: bundledLanguages,
     themes: bundledThemes,
-    engine: createOnigurumaEngine
+    engine: () => createOnigurumaEngine(wasmInit)
   })({
     langs: [],
     themes: ["solarized-light", "solarized-dark"]
