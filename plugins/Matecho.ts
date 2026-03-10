@@ -127,6 +127,10 @@ export default (config?: MatechoPluginConfig): Plugin => {
       }
     },
     configureServer(server) {
+      const backend = new URL(server.config.env.VITE_BACKEND_URL as string ?? "http://localhost").toString();
+      server.config.logger.info("use Typecho backend at " + backend, {
+        timestamp: true
+      });
       return () => {
         void server.middlewares.use((req, res) => {
           const proxy = createTransformProxy(
@@ -162,7 +166,7 @@ export default (config?: MatechoPluginConfig): Plugin => {
               }
             },
             {
-              target: "http://" + (server.config.server.host || "localhost"),
+              target: backend,
               selfHandleResponse: true
             }
           );
