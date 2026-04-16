@@ -249,6 +249,14 @@ export default (config?: MatechoPluginConfig): Plugin => {
           r = r.replaceAll(token, code);
         });
       }
+      const head = /<head[\s\S]*<\/head>/.exec(r)?.[0];
+      if (head) {
+        const blocks = [...head.matchAll(/<!--#KEEP_AT_END_BLOCK\w*\n([\s\S]+)-->/g)];
+        blocks.forEach(v => {
+          r = r.replace(v[0], "");
+        });
+        r = r.replace("</head>", blocks.map(v => v[1]).join("")+"</head>");
+      }
       return r;
     },
     generateBundle: {
