@@ -137,7 +137,9 @@ export default defineConfig(async env => {
     appType: "mpa",
     resolve: {
       alias: {
-        "@/": "/src/"
+        "@/": "/src/",
+        "@fancyapps/ui/dist/fancybox/l10n/zh_CN":
+          "@fancyapps/ui/dist/fancybox/l10n/zh_CN.umd"
       }
     },
     build: {

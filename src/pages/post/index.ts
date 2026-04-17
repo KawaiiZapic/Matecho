@@ -13,8 +13,8 @@ function initFancybox(container: HTMLElement) {
     import("@fancyapps/ui/dist/fancybox/fancybox.css"),
     Promise.all([
       import("@fancyapps/ui"),
-      import("@fancyapps/ui/dist/fancybox/l10n/en_EN")
-    ]).then(([{ Fancybox: fb }, { en_EN }]) => {
+      import("@fancyapps/ui/dist/fancybox/l10n/zh_CN")
+    ]).then(([{ Fancybox: fb }, { zh_CN }]) => {
       container.querySelectorAll<HTMLImageElement>("img").forEach(v => {
         v.setAttribute("data-fancybox", "article");
         if (v.alt ?? v.title) {
@@ -22,7 +22,7 @@ function initFancybox(container: HTMLElement) {
         }
       });
       fb.bind("[data-fancybox]", {
-        l10n: en_EN
+        l10n: zh_CN
       });
     })
   ]);
@@ -65,7 +65,7 @@ export async function initMermaid(container: HTMLElement) {
   mermaid.initialize({
     startOnLoad: false
   });
-  return await mermaid.run({
+  return mermaid.run({
     nodes: mapNodes
   });
 }
