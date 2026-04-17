@@ -4,7 +4,7 @@ import {
   bundledLanguages,
   bundledLanguagesInfo
 } from "shiki/langs";
-import type { BundledTheme } from "shiki/themes";
+import { createOnigurumaEngine } from "shiki/engine-oniguruma.mjs";
 
 import { PrismVue } from "@/utils/prism";
 import ClipboardJS from "clipboard";
@@ -310,26 +310,22 @@ export function initPrism(container: HTMLElement) {
     })
   ]);
 }
-
-let shikiInst: HighlighterGeneric<BundledLanguage, BundledTheme>;
+type UsedThemes = "solarized-light" | "solarized-dark";
+let shikiInst: HighlighterGeneric<BundledLanguage, UsedThemes>;
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let PrismInst: typeof import("virtual:prismjs").default;
 
 export async function loadShiki() {
-  const [
-    { createBundledHighlighter },
-    { bundledThemes },
-    { createOnigurumaEngine },
-    wasmInit
-  ] = await Promise.all([
+  const [{ createBundledHighlighter }, wasmInit] = await Promise.all([
     import("shiki/core"),
-    import("shiki/themes"),
-    import("shiki/engine/oniguruma"),
     import("shiki/onig.wasm?init")
   ]);
   shikiInst = await createBundledHighlighter({
     langs: bundledLanguages,
-    themes: bundledThemes,
+    themes: {
+      "solarized-light": () => import("shiki/themes/solarized-light.mjs"),
+      "solarized-dark": () => import("shiki/themes/solarized-dark.mjs")
+    },
     engine: () => createOnigurumaEngine(wasmInit)
   })({
     langs: [],
