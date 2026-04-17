@@ -16,6 +16,6 @@
     "matecho.config.ts",
     "unocss.config.ts",
     "plugins/**/*.ts",
-    "eslint.config.js"
+    "oxlint.config.ts"
   ]
 }

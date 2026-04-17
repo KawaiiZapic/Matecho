@@ -5,6 +5,9 @@ declare module "virtual:prismjs" {
   export default Prism;
 }
 
+declare module "virtual:components/*";
+declare module "virtual:components-custom-icon";
+
 declare interface PjaxEvent extends Event {
   scrollPos: [number, number];
   backward: boolean;

@@ -317,7 +317,7 @@ let PrismInst: typeof import("virtual:prismjs").default;
 
 export async function loadShiki() {
   const [
-    { createdBundledHighlighter },
+    { createBundledHighlighter },
     { bundledThemes },
     { createOnigurumaEngine },
     wasmInit
@@ -327,7 +327,7 @@ export async function loadShiki() {
     import("shiki/engine/oniguruma"),
     import("shiki/onig.wasm?init")
   ]);
-  shikiInst = await createdBundledHighlighter({
+  shikiInst = await createBundledHighlighter({
     langs: bundledLanguages,
     themes: bundledThemes,
     engine: () => createOnigurumaEngine(wasmInit)

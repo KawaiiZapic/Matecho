@@ -4,7 +4,6 @@
     "./node_modules/mdui/web-types.zh-cn.json"
   ],
   "dependencies": {
-    "@eslint/js": "^9.39.2",
     "@fancyapps/ui": "^6.1.13",
     "@mdui/icons": "^1.0.3",
     "@mermaid-js/mermaid-zenuml": "^0.2.2",
@@ -15,14 +14,11 @@
     "@types/nprogress": "^0.2.3",
     "@types/prismjs": "^1.26.6",
     "@unocss/core": "^66.6.8",
-    "@unocss/eslint-config": "^66.6.8",
+    "@unocss/eslint-plugin": "^66.6.8",
     "autoprefixer": "^10.5.0",
     "browserslist-useragent-regexp": "^4.1.4",
     "clipboard": "^2.0.11",
     "core-js": "^3.49.0",
-    "eslint": "^9.39.2",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.4",
     "fast-glob": "^3.3.3",
     "http-proxy": "^1.18.1",
     "katex": "^0.16.45",
@@ -31,11 +27,13 @@
     "mdui": "^2.1.4",
     "mermaid": "^11.14.0",
     "nprogress": "^0.2.0",
+    "oxfmt": "^0.45.0",
+    "oxlint": "^1.60.0",
+    "oxlint-tsgolint": "^0.21.1",
     "pjax": "^0.2.8",
     "postcss": "^8.5.10",
     "postcss-gap-properties": "^7.0.0",
     "postcss-load-config": "^6.0.1",
-    "prettier": "^3.7.4",
     "prismjs": "^1.30.0",
     "shiki": "^4.0.2",
     "simple-git-hooks": "^2.13.1",
@@ -43,7 +41,6 @@
     "stylelint-config-standard": "^40.0.0",
     "stylelint-less": "^4.1.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.50.1",
     "unocss": "^66.6.8",
     "vite": "^7.3.0"
   },
@@ -52,22 +49,23 @@
     "build": "vite build",
     "prepare": "simple-git-hooks",
     "type-check": "tsc --noEmit",
-    "lint": "eslint --max-warnings 0 . && stylelint --max-warnings 0 **/*.{c,le}ss",
-    "lint:fix": "eslint --max-warnings 0 --fix . && stylelint --max-warnings 0 --fix **/*.{c,le}ss && prettier --write -u --log-level silent ."
+    "lint": "oxlint --max-warnings 0 . && stylelint --max-warnings 0 **/*.{c,le}ss",
+    "lint:fix": "oxlint --max-warnings 0 --fix . && stylelint --max-warnings 0 --fix **/*.{c,le}ss && oxfmt"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"
   },
   "lint-staged": {
     "*.{js,ts}": [
-      "eslint --fix --max-warnings 0"
-    ],
-    "*.{json,md,yml,yaml,cjs}": [
-      "prettier --ignore-unknown --write"
+      "oxlint --fix --max-warnings 0",
+      "oxfmt"
     ],
     "*.{c,le}ss": [
       "stylelint --fix --max-warnings 0",
-      "prettier --ignore-unknown --write"
+      "oxfmt"
+    ],
+    "!(*.{css,less,js,ts})": [
+      "oxfmt --no-error-on-unmatched-pattern"
     ]
   },
   "pnpm": {

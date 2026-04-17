@@ -30,6 +30,7 @@
 import type { SourceCodeTransformer } from "@unocss/core";
 import { expandVariantGroup } from "@unocss/core";
 
+// oxlint-disable-next-line no-control-regex
 const regex = new RegExp(`class=(["'\`])([^\\1]+?)\\1`, "g");
 export interface CompileClassOptions {
   /**

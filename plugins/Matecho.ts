@@ -38,12 +38,12 @@ const createTransformProxy = (
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   proxy.on("proxyRes", async (proxyRes, req, res) => {
     for (const k in proxyRes.headers) {
-      res.setHeader(k, proxyRes.headers[k]);
+      res.setHeader(k, proxyRes.headers[k]!);
     }
-    res.statusCode = proxyRes.statusCode;
+    res.statusCode = proxyRes.statusCode!;
 
     // vite will throw a error if request a file ends with .json and content is not json
-    if (req.url.endsWith(".json") && proxyRes.statusCode >= 400) {
+    if (req.url!.endsWith(".json") && proxyRes.statusCode! >= 400) {
       res.end("");
       return;
     }
@@ -127,7 +127,9 @@ export default (config?: MatechoPluginConfig): Plugin => {
       }
     },
     configureServer(server) {
-      const backend = new URL(server.config.env.VITE_BACKEND_URL as string ?? "http://localhost").toString();
+      const backend = new URL(
+        (server.config.env.VITE_BACKEND_URL as string) ?? "http://localhost"
+      ).toString();
       server.config.logger.info("use Typecho backend at " + backend, {
         timestamp: true
       });
@@ -143,8 +145,11 @@ export default (config?: MatechoPluginConfig): Plugin => {
               ) {
                 try {
                   return await server.transformIndexHtml(
-                    req.url, 
-                    html.replaceAll("<%= CommitID %>", (config.CommitID ?? "unknown") + "-dev")
+                    req.url!,
+                    html.replaceAll(
+                      "<%= CommitID %>",
+                      (config!.CommitID ?? "unknown") + "-dev"
+                    )
                   );
                 } catch (e) {
                   console.error(e);
@@ -154,12 +159,12 @@ export default (config?: MatechoPluginConfig): Plugin => {
                         type: "error",
                         err: {
                           message: e.message,
-                          stack: e.stack
+                          stack: e.stack ?? ""
                         }
                       });
                     }, 100);
                   }
-                  return await server.transformIndexHtml(req.url, "");
+                  return await server.transformIndexHtml(req.url!, "");
                 }
               } else {
                 return html;
@@ -225,7 +230,7 @@ export default (config?: MatechoPluginConfig): Plugin => {
       if (id.endsWith("_actual_php.html")) {
         return (await readFile(id.replace("_actual_php.html", ".php")))
           .toString()
-          .replaceAll("<%= CommitID %>", config.CommitID ?? "unknown")
+          .replaceAll("<%= CommitID %>", config!.CommitID ?? "unknown")
           .replace(/<\?(?:php|).+?(\?>|$)/gis, match => {
             const token = "PHPCode" + hash(match) + Date.now();
             codeTokens[token] = match;
@@ -251,11 +256,13 @@ export default (config?: MatechoPluginConfig): Plugin => {
       }
       const head = /<head[\s\S]*<\/head>/.exec(r)?.[0];
       if (head) {
-        const blocks = [...head.matchAll(/<!--#KEEP_AT_END_BLOCK\w*\n([\s\S]+)-->/g)];
+        const blocks = [
+          ...head.matchAll(/<!--#KEEP_AT_END_BLOCK\w*\n([\s\S]+)-->/g)
+        ];
         blocks.forEach(v => {
           r = r.replace(v[0], "");
         });
-        r = r.replace("</head>", blocks.map(v => v[1]).join("")+"</head>");
+        r = r.replace("</head>", blocks.map(v => v[1]).join("") + "</head>");
       }
       return r;
     },
