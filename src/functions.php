@@ -288,7 +288,7 @@ class Matecho {
             "content" => $archive->getArchiveUrl()
         ], true);
 
-        if (strlen($options->TwitterCardRef) > 0) {
+        if ($options->TwitterCardRef) {
             $meta .= self::toTag("meta", [
                 "property" => "twitter:site",
                 "content" => $options->TwitterCardRef
