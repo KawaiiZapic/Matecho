@@ -57,12 +57,13 @@ export default defineConfig(async env => {
   return {
     plugins: [
       unocss({
-        //@ts-expect-error ???
-        transformers: isBuild && [
-          UnoCSSClassMangle({
-            classPrefix: "m-"
-          })
-        ]
+        transformers: isBuild
+          ? [
+              UnoCSSClassMangle({
+                classPrefix: "m-"
+              })
+            ]
+          : void 0
       }),
       Matecho({
         CommitID: COMMIT_ID,
@@ -140,13 +141,12 @@ export default defineConfig(async env => {
       }
     },
     build: {
-      rollupOptions: {
+      rolldownOptions: {
         input: [...(await fg("src/**/*.php"))],
         output: {
           assetFileNames: "assets/assets-[hash].[ext]",
           chunkFileNames: "assets/chunk-[hash].js",
-          entryFileNames: "assets/chuck-[hash].js",
-          experimentalMinChunkSize: 20000
+          entryFileNames: "assets/chuck-[hash].js"
         }
       },
       target: isProd ? "es2018" : "esnext",
