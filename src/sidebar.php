@@ -28,9 +28,19 @@ if (!defined('__TYPECHO_ROOT_DIR__'))
                     while ($category->next()) {
                         if ($category->parent != 0)
                             continue;
+                        $archiveType = $this->getArchiveType();
+                        $isCurrentCategory = false;
+                        if ($archiveType == "post") {
+                            foreach ($this->categories as $cat) {
+                                if ($cat["mid"] == $category->mid) {
+                                    $isCurrentCategory = true;
+                                    break;
+                                }
+                            }
+                        }
                         ?>
                         <a href="<?php $category->permalink() ?>">
-                            <mdui-list-item rounded class="pl-40px" <?php Matecho::activePage($this, "category", $category->mid); ?>>
+                            <mdui-list-item rounded <?php if ($isCurrentCategory) { echo 'active'; } ?> class="pl-40px" <?php Matecho::activePage($this, "category", $category->mid); ?>>
                                 <?php echo $category->name ?>
                                 <span class="text-xs opacity-60"
                                     slot="description"><?php echo $category->description ?></span>
