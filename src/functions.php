@@ -24,6 +24,11 @@ function themeConfig(Form $form): void {
             <a href="/admin/options-discussion.php">修改设置</a>
         </div>
     <?php }
+    if (!extension_loaded("curl")) { ?>
+        <div>
+            <b>警告:</b> 没有安装PHP cURL扩展, 无法使用代码实时运行功能. 
+        </div>
+    <?php }
     $form->addInput(new Text("ColorScheme", null, "", "主题色", "十六进制的主题色, 如#E91E63."));
     $form->addInput(new Text("GravatarURL", null, "https://gravatar.loli.net/avatar/", "Gravatar镜像", ""));
     if (!is_writable(__DIR__."/assets/color-scheme.css")) {
@@ -150,17 +155,23 @@ class Matecho {
         if ($req->isPost() && $path == "/api/runner") {
             $res->clean();
             $res->setContentType("application/json");
+            if (!extension_loaded("curl")) {
+                $res->setStatus(500);
+                return $res->addResponder(function() {
+                    print_r('{ "message": "PHP cURL扩展未安装." }');
+                });
+            }
             if (!$options->GlotAccessToken) {
                 $res->setStatus(500);
                 return $res->addResponder(function() {
-                    print_r('{ "message": "glot.io access token not exists." }');
+                    print_r('{ "message": "未设置 glot.io 访问令牌." }');
                 });
             }
             $body = json_decode(file_get_contents("php://input"), true);;
             if (!isset(self::$LangExtMap[$body["lang"]])) {
                 $res->setStatus(500);
                 return $res->addResponder(function() {
-                    print_r('{ "message": "this lang is not supported." }');
+                    print_r('{ "message": "不支持该语言." }');
                 });
             }
             $curl = curl_init("https://glot.io/api/run/" . $body["lang"] . "/latest");
@@ -257,6 +268,7 @@ class Matecho {
             "FancyBox" => $options->EnableFancyBox ? true : false,
             "Mermaid" => $options -> EnableMermaid ? true : false,
             "Highlighter" => $options->CodeHighlighter ?? "Prism",
+            "IsCodeRunningEnabled" => extension_loaded("curl") && $options->GlotAccessToken,
             "ExSearch" => $options->ExSearchIntegration === "enhanced" ? self::ExSearchURL() : ""
         ]) . ";</script>";
     }
