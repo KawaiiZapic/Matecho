@@ -520,6 +520,22 @@ class Matecho {
         return 0;
     }
 
+    static function buildBreadCrumb(Archive $archive) {
+        $options = Helper::options();
+                
+        $splitter = '<mdui-icon-chevron-right class="matecho-navigate-splitter"></mdui-icon-chevron-right>';
+        $result = [
+            '<a href="' . $options->siteUrl . '"><mdui-icon-home class="matecho-navigate-icon"></mdui-icon-home></a>'
+        ];
+        foreach ($archive->categories as $category) {
+            $result[] = '<a href="' . $category["permalink"] . '">' . $category["name"] . '</a>';
+        }
+        if (count($result) == 1) {
+            $result[] = '<a href="' . $archive->permalink . '">此文章</a>';
+        }
+        print_r(join($splitter, $result));
+    }
+
     static function links(): array {
         $options = \Typecho\Widget::widget('Widget_Options');
 		if (!isset($options->plugins['activated']['Links'])) {
