@@ -5,6 +5,10 @@ import { copyFile, cp, readFile, rm, mkdir } from "node:fs/promises";
 import HttpProxy from "http-proxy";
 import { existsSync } from "node:fs";
 import type { IncomingMessage, ServerResponse } from "node:http";
+import fs from "fs/promises";
+import type { ChildProcess } from "node:child_process";
+import { execSync, spawn } from "node:child_process";
+import path from "node:path";
 
 export interface MatechoBuildOptions {
   PrismLanguages: string[];
@@ -19,6 +23,15 @@ interface MatechoPluginConfig {
   extraIcons?: string[];
   CommitID?: string;
 }
+
+const existsAsync = async (path: string) => {
+  try {
+    await fs.access(path);
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 const createTransformProxy = (
   transformer: (
@@ -79,6 +92,7 @@ export default (config?: MatechoPluginConfig): Plugin => {
   };
 
   let env: ConfigEnv = {} as ConfigEnv;
+  let phpServer: ChildProcess | null = null;
 
   return {
     name: "Matecho",
@@ -126,13 +140,71 @@ export default (config?: MatechoPluginConfig): Plugin => {
         }
       }
     },
-    configureServer(server) {
-      const backend = new URL(
-        (server.config.env.VITE_BACKEND_URL as string) ?? "http://localhost"
-      ).toString();
-      server.config.logger.info("use Typecho backend at " + backend, {
-        timestamp: true
-      });
+    async configureServer(server) {
+      let backend: string;
+      const _logger = server.config.logger;
+      const logger = {
+        info(msg: string) {
+          _logger.info(msg, { timestamp: true });
+        }
+      };
+      if (
+        typeof server.config.env.VITE_BACKEND_URL !== "string" ||
+        server.config.env.VITE_BACKEND_URL === ""
+      ) {
+        const typechoBase = "node_modules/.cache/typecho";
+        try {
+          execSync("php -v");
+        } catch {
+          this.error(
+            "PHP is not installed, please install PHP > 7.4 or set custom backend url in .env"
+          );
+        }
+        if (!(await existsAsync(path.join(typechoBase, "index.php")))) {
+          logger.info("Downloading Typecho...");
+          try {
+            await fs.rm(typechoBase, { recursive: true });
+          } catch {
+            /* ignore */
+          }
+          await fs.mkdir(typechoBase, { recursive: true });
+          const res = await fetch(
+            "https://github.com/typecho/typecho/releases/latest/download/typecho.zip"
+          );
+          await fs.writeFile(
+            path.join(typechoBase, "typecho.zip"),
+            Buffer.from(await res.arrayBuffer())
+          );
+          execSync("unzip typecho.zip", {
+            cwd: typechoBase
+          });
+        }
+        phpServer = spawn("php", ["-S", "127.0.0.1:11451"], {
+          cwd: typechoBase
+        });
+        phpServer.on("exit", () => {
+          const code = phpServer?.exitCode;
+          if (typeof code === "number" && code !== 0) {
+            this.error("PHP server crashed with exit code " + code);
+          }
+        });
+        if (
+          !(await existsAsync(
+            path.join(typechoBase, "usr", "themes", "Matecho")
+          ))
+        ) {
+          await fs.symlink(
+            path.resolve("dist"),
+            path.join(typechoBase, "usr", "themes", "Matecho"),
+            "dir"
+          );
+        }
+        backend = "http://localhost:11451";
+        logger.info("use built-in Typecho backend at " + backend);
+      } else {
+        backend = new URL(server.config.env.VITE_BACKEND_URL).toString();
+        logger.info("use Typecho backend at " + backend);
+      }
       return () => {
         void server.middlewares.use((req, res) => {
           const proxy = createTransformProxy(
@@ -283,6 +355,9 @@ export default (config?: MatechoPluginConfig): Plugin => {
             .replaceAll("1 .toString", "1..toString");
         }
       }
+    },
+    buildEnd() {
+      phpServer?.kill();
     }
   };
 };
