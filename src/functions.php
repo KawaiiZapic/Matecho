@@ -12,6 +12,7 @@ use Widget\Archive;
 function themeConfig(Form $form): void {
     Matecho::generateThemeCSS();
     $options = Helper::options();
+    ob_start();
     if ($options->pageSize % 12 != 0) { ?>
         <div>
             <b>警告:</b> "每页文章数目"不为12的整倍数, 可能会导致在不同大小屏幕下文章列表底部大面积留白. 
@@ -27,6 +28,12 @@ function themeConfig(Form $form): void {
     if (!extension_loaded("curl")) { ?>
         <div>
             <b>警告:</b> 没有安装PHP cURL扩展, 无法使用代码实时运行功能. 
+        </div>
+    <?php }
+    $warningContents = ob_get_clean();
+    if (is_string($warningContents) && strlen(trim($warningContents)) > 0) { ?>
+        <div style="border: #f66 2px solid; background: #f3f3f3; padding: 12px; box-sizing: border-box;">
+            <?php echo $warningContents; ?>
         </div>
     <?php }
     $form->addInput(new Text("ColorScheme", null, "", "主题色", "十六进制的主题色, 如#E91E63."));
