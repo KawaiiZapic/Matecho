@@ -4,7 +4,7 @@ import type { Button, Dialog, Fab, TextField } from "mdui";
 import { breakpoint, observeResize } from "mdui";
 import "virtual:components/page-links";
 import "@/style/links.less";
-import { sendComment } from "@/main";
+import { sendComment } from "@/modules/Comment";
 
 const handleLinkAvatarLoading = () => {
   const img = document.querySelectorAll<HTMLImageElement>(

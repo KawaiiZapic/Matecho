@@ -1,6 +1,6 @@
 import type { TextField, Button } from "mdui";
 import { openSnackbar } from "@/utils/global";
-import { sendComment } from "@/main";
+import { sendComment } from "@/modules/Comment";
 
 function cloneCommentForm() {
   const node = document
