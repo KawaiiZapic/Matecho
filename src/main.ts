@@ -336,6 +336,8 @@ async function initExSearch(url: string) {
   dropdown.placement = "bottom-start";
   const list = new List();
   list.classList.add("search-menu");
+  // @ts-expect-error prevent MDUI focus on panel when dropdown is opened, which will cause searchbar focus loss
+  list.focus = null;
   searchbar.after(dropdown);
   searchbar.slot = "trigger";
   dropdown.appendChild(searchbar);
@@ -349,8 +351,7 @@ async function initExSearch(url: string) {
         searchbar.value = "";
         searchbar.blur();
       }
-    }
-    if (e.key === "ArrowDown") {
+    } else if (e.key === "ArrowDown") {
       e.preventDefault();
       const el = list.querySelector<ListItem>("mdui-list-item[active]");
       if (!el) {
@@ -363,8 +364,7 @@ async function initExSearch(url: string) {
         (list.firstElementChild as ListItem).active = true;
         el!.active = false;
       }
-    }
-    if (e.key === "ArrowUp") {
+    } else if (e.key === "ArrowUp") {
       e.preventDefault();
       const el = list.querySelector<ListItem>("mdui-list-item[active]");
       if (!el) {
@@ -378,6 +378,35 @@ async function initExSearch(url: string) {
         el!.active = false;
       }
     }
+    if (e.defaultPrevented) {
+      setTimeout(() => {
+        const target = list.querySelector<ListItem>("mdui-list-item[active]");
+        if (target) {
+          const listRect = list.getBoundingClientRect();
+          const targetRect = target.getBoundingClientRect();
+          if (targetRect.top < listRect.top) {
+            list.scrollTo({
+              top: list.scrollTop - (listRect.top - targetRect.top),
+              behavior: "smooth"
+            });
+          } else if (targetRect.bottom > listRect.bottom) {
+            list.scrollTo({
+              top: list.scrollTop + (targetRect.bottom - listRect.bottom),
+              behavior: "smooth"
+            });
+          }
+        }
+      });
+    }
+  });
+  searchbar.addEventListener("focus", () => {
+    // When user click on Clear button of search input, focus will trigger immediately
+    // But the input is not clear immediately, wait a bit for it to be cleared.
+    setTimeout(() => {
+      if (searchbar.value.length > 0) {
+        dropdown.open = true;
+      }
+    }, 100);
   });
   searchbar.addEventListener(
     "input",
@@ -414,6 +443,8 @@ async function initExSearch(url: string) {
       });
       if (list.childNodes.length == 0) {
         addMenuItem("无搜索结果", "尝试更换搜索词");
+      } else {
+        (list.firstChild as ListItem).active = true;
       }
       dropdown.open = true;
     },
