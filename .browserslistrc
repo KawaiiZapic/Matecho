@@ -1,2 +1,2 @@
-# equal to Chrome > 63 & Firefox > 67 & Safari > 11.1
-supports custom-elementsv1 and supports es6-module-dynamic-import
+# equal to Chrome > 66 & Firefox > 67 & Safari > 12
+supports custom-elementsv1 and supports es6-module-dynamic-import and supports abortcontroller

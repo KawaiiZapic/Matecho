@@ -14,7 +14,6 @@ import { mGlobal } from "@/utils/global";
 import Pjax from "pjax";
 import np from "nprogress";
 
-import "@/utils/polyfill";
 import "@mdui/icons/insert-drive-file";
 import "@mdui/icons/link";
 
@@ -98,12 +97,16 @@ function initOnce() {
   const searchInput = document.querySelector(
     "#matecho-top-search-bar"
   ) as TextField;
+  const searchHiddenInput = document.querySelector(
+    "form input[name='s']"
+  ) as HTMLInputElement;
+  const searchForm = searchInput.parentElement as HTMLFormElement;
   searchBtn.addEventListener("click", () => {
     if (searchInput.disabled) {
       searchInput.disabled = false;
-      setTimeout(() => searchInput.focus(), 0);
+      setTimeout(() => searchInput.focus());
     } else {
-      (searchInput.parentElement as HTMLFormElement).requestSubmit();
+      searchForm.requestSubmit();
     }
   });
 
@@ -111,6 +114,10 @@ function initOnce() {
     if (!searchInput.value) {
       searchInput.disabled = true;
     }
+  });
+
+  searchForm.addEventListener("submit", () => {
+    searchHiddenInput.value = searchInput.value;
   });
 
   const signal = {

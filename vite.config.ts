@@ -151,7 +151,7 @@ export default defineConfig(async env => {
           entryFileNames: "assets/chuck-[hash].js"
         }
       },
-      target: isProd ? "es2018" : "esnext",
+      target: "es2018",
       minify: isProd,
       sourcemap: !isProd,
       cssMinify: isProd

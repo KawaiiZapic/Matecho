@@ -1,5 +1,11 @@
 import "core-js/modules/es.global-this";
 import "core-js/modules/es.array.flat";
+import "core-js/modules/es.array.flat-map";
+import "core-js/modules/es.array.at";
+import "core-js/modules/es.object.from-entries";
+import "core-js/modules/es.object.has-own";
+import "core-js/modules/es.string.replace-all";
+import "core-js/modules/web.structured-clone";
 
 if (!Element.prototype.toggleAttribute) {
   Element.prototype.toggleAttribute = function (name, force) {
@@ -31,3 +37,5 @@ if (!Element.prototype.getAnimations) {
     return [];
   };
 }
+
+void import("./main");

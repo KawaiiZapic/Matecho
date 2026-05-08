@@ -18,7 +18,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 	),'',' - '); ?><?php $this->options->title(); ?></title>
     <style>.un-br{position:fixed;top:0;left:0;width:100%;height:100%;background-color:#eee;text-align:center;z-index: 99999;}.un-br_sf{font-size: 5em; color:#999;}@media(prefers-color-scheme:dark){.un-br{color:white;background-color:#1f1f1f;}.un-br_sf{color: #ccc;}}:not(:defined){visibility:hidden}#m-loading-wrapper{position:fixed;top:0;left:0;z-index:100;display:flex;width:100%;height:100vh;align-items:center;justify-content:center;background:rgb(var(--mdui-color-background))}.loading-circle{display:block;animation:rotate 2s linear infinite;height:75px;transform-origin:center center;width:75px;fill:none;stroke-width:3;stroke:rgb(var(--mdui-color-primary))}.loading-path{stroke-dasharray:150,200;stroke-dashoffset:-10;animation:dash 1.5s ease-in-out infinite;stroke-linecap:round}@keyframes rotate{to{transform:rotate(360deg)}}@keyframes dash{0%{stroke-dasharray:1,200;stroke-dashoffset:0}50%{stroke-dasharray:89,200;stroke-dashoffset:-35}to{stroke-dasharray:89,200;stroke-dashoffset:-124}}</style>
     <link rel="stylesheet" href="/src/style/main.less">
-    <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/polyfill-entry.ts"></script>
     <?php Matecho::generateOG($this) ?>
     <?php $this->header("commentReply=&antiSpam="); ?>
 <!--#KEEP_AT_END_BLOCK
@@ -59,11 +59,12 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 
         <div class="flex flex-grow-1 justify-end">
             <form action="/" method="post" role="search" enctype="multipart/form-data">
-                <mdui-text-field autocomplete="off" name="s" placeholder="搜索" disabled variant="outlined" clearable class="mt--4px search-form-input" type="search" id="matecho-top-search-bar">
+                <mdui-text-field autocomplete="off" placeholder="搜索" disabled variant="outlined" clearable class="mt--4px search-form-input" type="search" id="matecho-top-search-bar">
                     <mdui-button-icon name="搜索" slot="icon" id="matecho-top-search-btn">
                         <mdui-icon-search></mdui-icon-search>
                     </mdui-button-icon>
                 </mdui-text-field>
+                <input type="hidden" name="s">
             </form>
         </div>
         <mdui-button-icon name="管理面板" href="<?php $this->options->adminUrl(); ?>" target="_blank" nofollow>
