@@ -74,5 +74,5 @@
       "mermaid@11.14.0": "patches/mermaid@11.14.0.patch"
     }
   },
-  "version": "0.5.1"
+  "version": "0.5.2"
 }
