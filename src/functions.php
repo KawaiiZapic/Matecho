@@ -76,7 +76,7 @@ function themeInit(Archive $context): void {
         Matecho::generateThemeCSS();
     }
 
-    if ($options->ExSearchIntegration === "enhanced") {
+    if ($options->ExSearchIntegration === "enhanced" || !Matecho::hasLogin()) {
         Matecho::ExSearchIntegration();
     }
 
@@ -268,6 +268,11 @@ class Matecho {
 
     }
 
+    static function hasLogin() {
+        $user = \Typecho\Widget::widget('Widget_User');
+        return $user->have() && $user->hasLogin();
+    }
+
     static function generateJSOptions(): void {
         $options = Helper::options();
         echo "<script>window.__MATECHO_OPTIONS__=" . json_encode([
@@ -276,7 +281,7 @@ class Matecho {
             "Mermaid" => $options -> EnableMermaid ? true : false,
             "Highlighter" => $options->CodeHighlighter ?? "Prism",
             "IsCodeRunningEnabled" => extension_loaded("curl") && $options->GlotAccessToken,
-            "ExSearch" => $options->ExSearchIntegration === "enhanced" ? self::ExSearchURL() : ""
+            "ExSearch" => $options->ExSearchIntegration === "enhanced" && self::hasLogin() ? self::ExSearchURL() : ""
         ]) . ";</script>";
     }
 
