@@ -69,7 +69,7 @@ export async function initExSearchEnhanced(url: string) {
   dropdown.trigger = "manual";
   dropdown.placement = "bottom-start";
   const list = new List();
-  list.classList.add("search-menu");
+  list.classList.add("matecho-search-menu");
   // @ts-expect-error prevent MDUI focus on panel when dropdown is opened, which will cause searchbar focus loss
   list.focus = null;
   searchbar.after(dropdown);
