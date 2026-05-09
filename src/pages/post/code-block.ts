@@ -10,6 +10,7 @@ import { PrismVue } from "@/utils/prism";
 import ClipboardJS from "clipboard";
 import { openSnackbar } from "@/utils/global";
 import "@mdui/icons/play-arrow.js";
+import { $, dialog } from "mdui";
 
 const glotLangAliasMap: Record<string, string> = {
   asm: "assembly",
@@ -180,6 +181,7 @@ function bindTextarea(
   });
 }
 
+let hasDeprecatingRunnableAnnotationWarn = false;
 export function initCodeBlockAction(wrapper: HTMLElement) {
   wrapper.querySelectorAll("pre").forEach(el => {
     const codeEl = el.querySelector("code");
@@ -215,8 +217,14 @@ export function initCodeBlockAction(wrapper: HTMLElement) {
       );
     }
 
+    const preWrapper = el.previousSibling;
+    const hasDeprecatingRunnableAnnotation = codeLangOpt.includes("r");
+    const isRunnable =
+      hasDeprecatingRunnableAnnotation ||
+      (preWrapper?.nodeType === 8 &&
+        preWrapper.textContent?.toLocaleLowerCase() === "{runnable}");
     if (
-      codeLangOpt.includes("r") &&
+      isRunnable &&
       (glotSupportList.includes(codeLang.toLocaleLowerCase()) ||
         codeLang.toLocaleLowerCase() in glotLangAliasMap)
     ) {
@@ -229,6 +237,32 @@ export function initCodeBlockAction(wrapper: HTMLElement) {
       let CodeBlockOutput: HTMLElement;
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       runBtn.addEventListener("click", async () => {
+        if (
+          hasDeprecatingRunnableAnnotation &&
+          !hasDeprecatingRunnableAnnotationWarn
+        ) {
+          hasDeprecatingRunnableAnnotationWarn = true;
+          dialog({
+            headline: '使用"-r"标注可运行代码块的功能即将弃用',
+            body: $(`<div>
+              <div>未来的版本将不支持使用-r后缀标注可运行的代码块，请改为使用在代码块前添加 <code style="background-color: #f0f0f0; color: #333; border-radius: 4px; padding: 2px;">&lt;!--{runnable}--></code> 注释来启用代码块运行功能。</div>
+              <pre style="background-color: #f0f0f0; color: #333; border-radius: 4px; padding: 8px;"><span style="color: #999"># 将不受支持</span>
+\`\`\`javascript-r
+
+<span style="color: #999"># 请改为使用runnable注释</span>
+<span style="color: #146C2E">&lt;!--{runnable}--></span>
+\`\`\`javascript</pre>
+              </div>`),
+            actions: [
+              {
+                text: "我知道了",
+                onClick(dialog) {
+                  dialog.open = false;
+                }
+              }
+            ]
+          });
+        }
         runBtn.loading = true;
         el.classList.add("code-running");
         const resp = await runCodeBlock(realLang, codeEl.innerText);
