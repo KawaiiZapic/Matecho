@@ -129,7 +129,7 @@ function initOnce() {
 
   mGlobal.pjax = new Pjax({
     selectors: [
-      "title",
+      "head > title",
       "#matecho-pjax-main",
       "#matecho-app-bar-title__inner",
       "#matecho-sidebar-list",
