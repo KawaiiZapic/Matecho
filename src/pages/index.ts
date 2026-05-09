@@ -8,8 +8,24 @@ export function init() {
       if (parent.getAttribute("data-article-hidden") !== null) {
         return;
       }
-      parent.querySelectorAll("a[href]").forEach(href => {
-        href.addEventListener("click", () => {
+      parent.addEventListener(
+        "click",
+        e => {
+          let isLinkClick = false;
+          let currentEl = e.target;
+          while (
+            currentEl != null &&
+            currentEl != parent &&
+            currentEl != window
+          ) {
+            if (currentEl instanceof HTMLAnchorElement && currentEl.href) {
+              isLinkClick = true;
+              break;
+            } else if (currentEl instanceof HTMLElement) {
+              currentEl = currentEl.parentElement;
+            }
+          }
+          if (!isLinkClick) return;
           let pSize = parent.getBoundingClientRect();
           const placeholder = document.createElement("div");
           const abort = new AbortController();
@@ -53,13 +69,14 @@ export function init() {
               }
               document.body.appendChild(parent);
               document.body.classList.add("matecho-article-animation__running");
+              let newTop = 0;
               requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                   Object.assign((parent as HTMLElement).style, {
                     height: "",
                     width: "",
                     left: "",
-                    top: ""
+                    top: newTop.toString() + "px"
                   });
                 });
               });
@@ -73,6 +90,12 @@ export function init() {
                 parent.remove();
                 return;
               }
+              const targetCover = articleMain.querySelector(
+                ".matecho-article-cover"
+              )!;
+              newTop =
+                targetCover.getBoundingClientRect().y +
+                document.scrollingElement!.scrollTop;
               const ob = new MutationObserver(() => {
                 if (!articleMain.parentElement) {
                   ob.disconnect();
@@ -99,7 +122,8 @@ export function init() {
             },
             { once: true }
           );
-        });
-      });
+        },
+        { passive: true }
+      );
     });
 }

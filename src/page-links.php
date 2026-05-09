@@ -24,7 +24,7 @@ $linksCount = count($links);
                     'author' => _t('%s 发布的文章')
                 ), '', ''); ?>
             </div>
-            <div class="text-sm opacity-80 block mt-3 truncate">
+            <div class="matecho-app-bar-large-label__sub">
                 <?php
                 echo "$linksCount 位友人";
                 ?>

@@ -10,7 +10,7 @@ Typecho\Plugin::export();
             <div class="truncate text-4xl md:text-5xl line-height-[1.4]!">
                 页面未找到
             </div>
-            <div class="text-sm opacity-80 block mt-3 truncate">
+            <div class="matecho-app-bar-large-label__sub">
                 404 Not Found
             </div>
         </div>

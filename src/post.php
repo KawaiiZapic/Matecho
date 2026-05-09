@@ -15,15 +15,15 @@ $this->need('header.php');
                 <div class="truncate text-3xl md:text-5xl line-height-[1.4]!">
                     <?php $this->title(); ?>
                 </div>
-                <div class="text-sm opacity-80 block mt-3 truncate h-5">
-                    <?php
-                    if ($this->archiveType === 'post') {
-                        if (!$this->hidden && $this->fields->description) {
-                            echo $this->fields->description;
-                        }
-                    }
-                    ?>
-                </div>
+                <?php
+                if ($this->archiveType === 'post') {
+                    if (!$this->hidden && $this->fields->description) { ?>
+                        <div class="matecho-app-bar-large-label__sub">
+                            <?php $this->fields->description(); ?>
+                        </div>
+                    <?php }
+                }
+                ?>
             </div>
         </div>
         <div class="matecho-article-cover mb-8 md:rounded-xl transition block h-240px w-full overflow-hidden bg-center bg-cover"
@@ -73,9 +73,9 @@ $this->need('header.php');
                 </div>
                 <div id="matecho-comment-list">
                     <?php
-                        while ($comments->next()) {
-                            Matecho::toComment($comments, $this->allowComment);
-                        }
+                    while ($comments->next()) {
+                        Matecho::toComment($comments, $this->allowComment);
+                    }
                     ?>
                 </div>
                 <?php if ($comments->___length() === 0) { ?>
