@@ -77,43 +77,56 @@ function countMoney(str: string) {
   return count;
 }
 
+function initArticle(article: HTMLElement) {
+  const { Highlighter, FancyBox, KaTeX, Mermaid } = window.__MATECHO_OPTIONS__;
+  // enforce Mermaid processed before code block
+  // this is required to prevent codeblock logic break Mermaid.
+  // initMermaid will modify DOM struct make code block logic cannot process it as code block
+  if (Mermaid && article.querySelector("pre > code.lang-mermaid")) {
+    void initMermaid(article);
+  }
+  initCodeBlockAction(article);
+  if (article.querySelector("pre > code[class*=lang-]")) {
+    if (Highlighter == "Prism") {
+      void initPrism(article);
+    } else if (Highlighter == "Shiki") {
+      void initShiki(article);
+    }
+  }
+  if (FancyBox && article.querySelector("img")) {
+    void initFancybox(article);
+  }
+  if (KaTeX) {
+    const count$ = countMoney(article.innerText);
+    if (article.innerText.includes("$")) {
+      const excludeText = Array.from(
+        article.querySelectorAll<HTMLElement>(
+          "script, noscript, style, textarea, pre, code, option"
+        )
+      )
+        .map(v => v.innerText)
+        .join("");
+      const excluded$ = countMoney(excludeText);
+      if (excluded$ < count$) {
+        void initKaTeX(article);
+      }
+    }
+  }
+}
+
 export function init(el: HTMLElement) {
   initComments(el);
   const article = el.querySelector<HTMLElement>("article.mdui-prose");
-  const { Highlighter, FancyBox, KaTeX, Mermaid } = window.__MATECHO_OPTIONS__;
   if (article) {
-    initCodeBlockAction(article);
-    // enforce Mermaid processed before code block
-    // this is required to prevent codeblock logic break Mermaid.
-    // initMermaid will modify DOM struct make code block logic cannot process it as code block
-    if (Mermaid && article.querySelector("pre > code.lang-mermaid")) {
-      void initMermaid(article);
-    }
-    if (article.querySelector("pre > code[class*=lang-]")) {
-      if (Highlighter == "Prism") {
-        void initPrism(article);
-      } else if (Highlighter == "Shiki") {
-        void initShiki(article);
-      }
-    }
-    if (FancyBox && article.querySelector("img")) {
-      void initFancybox(article);
-    }
-    if (KaTeX) {
-      const count$ = countMoney(article.innerText);
-      if (article.innerText.includes("$")) {
-        const excludeText = Array.from(
-          article.querySelectorAll<HTMLElement>(
-            "script, noscript, style, textarea, pre, code, option"
-          )
-        )
-          .map(v => v.innerText)
-          .join("");
-        const excluded$ = countMoney(excludeText);
-        if (excluded$ < count$) {
-          void initKaTeX(article);
-        }
-      }
+    if (el.classList.contains("slide-in")) {
+      const initCb = () => initArticle(article);
+      el.addEventListener("animationend", initCb, { once: true });
+      setTimeout(() => {
+        initCb();
+        el.removeEventListener("animationend", initCb);
+      }, 500);
+    } else {
+      initArticle(article);
     }
   }
   const password = document.querySelector<HTMLFormElement>(
