@@ -29,6 +29,7 @@ import {
 
 interface IInit {
   init?: (el: HTMLElement) => void | Promise<void>;
+  destroy?: (el: HTMLElement) => void | Promise<void>;
 }
 
 function loadPageScript(type: string): Promise<IInit> {
@@ -126,6 +127,7 @@ function initOnce() {
   };
 
   let PjaxBackward = false;
+  let cleanUpCb: undefined | ((el: HTMLElement) => unknown) = void 0;
 
   mGlobal.pjax = new Pjax({
     selectors: [
@@ -146,6 +148,7 @@ function initOnce() {
       "#matecho-pjax-main": async function (oldEl: Element, el: Element) {
         const type = await signal.promise;
         const scripts = await loadPageScript(type);
+        await cleanUpCb?.(oldEl as HTMLElement);
         oldEl.replaceWith(el);
         const wrapper =
           document.querySelector<HTMLDivElement>("#matecho-pjax-main");
@@ -164,6 +167,7 @@ function initOnce() {
           wrapper.classList.add(className);
         }
         await scripts.init?.(el as HTMLDivElement);
+        cleanUpCb = scripts.destroy;
         this.onSwitch(oldEl, el);
       }
     }

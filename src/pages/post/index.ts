@@ -149,4 +149,13 @@ export function init(el: HTMLElement) {
   }
 }
 
+export function destroy() {
+  // some mermaid sh*t
+  document
+    .querySelectorAll(
+      "#zenuml-intersection-detector-container, #headlessui-portal-root, .mermaidTooltip, .textarea-hidden-div"
+    )
+    .forEach(el => el.remove());
+}
+
 export { initPrism, initShiki };
