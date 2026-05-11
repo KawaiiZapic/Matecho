@@ -334,15 +334,21 @@ const LangNameMap = {
   )
 };
 
-export function initPrism(container: HTMLElement) {
-  return Promise.all([
-    import("@/style/prism.less"),
-    import("virtual:prismjs").then(({ default: Prism }) => {
-      PrismVue(Prism);
-      Prism.highlightAllUnder(container);
-      PrismInst = Prism;
-    })
-  ]);
+export async function initPrism(
+  container: HTMLElement,
+  heavyOpDelay: Promise<void>
+) {
+  if (!PrismInst) {
+    await Promise.all([
+      import("@/style/prism.less"),
+      import("virtual:prismjs").then(({ default: Prism }) => {
+        PrismInst = Prism;
+        PrismVue(Prism);
+      })
+    ]);
+  }
+  await heavyOpDelay;
+  PrismInst.highlightAllUnder(container);
 }
 type UsedThemes = "solarized-light" | "solarized-dark";
 let shikiInst: HighlighterGeneric<BundledLanguage, UsedThemes>;
@@ -367,7 +373,10 @@ export async function loadShiki() {
   });
 }
 
-export async function initShiki(container: HTMLElement) {
+export async function initShiki(
+  container: HTMLElement,
+  heavyOpDelay: Promise<void>
+) {
   if (!shikiInst) {
     await loadShiki();
   }
@@ -384,7 +393,7 @@ export async function initShiki(container: HTMLElement) {
   });
 
   await shikiInst.loadLanguage(...Array.from(requireLangs));
-
+  await heavyOpDelay;
   blocks.forEach(el => {
     if (el.parentElement?.classList.contains("shiki")) return;
     const lang = /lang-(\w+)/.exec(el.className)?.[1];
