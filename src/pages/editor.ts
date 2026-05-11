@@ -11,10 +11,11 @@ function init() {
     const preview = document.querySelector<HTMLDivElement>("#wmd-preview");
     if (!preview) return;
     clearInterval(int);
+    const heavyOpDelay = Promise.resolve();
     const { KaTeX, Highlighter, Mermaid } = window.__MATECHO_OPTIONS__;
     const ob = new MutationObserver(() => {
       if (window.getComputedStyle(preview).display === "none") return;
-      if (KaTeX) void initKaTeX(preview);
+      if (KaTeX) void initKaTeX(preview, heavyOpDelay);
       preview.querySelectorAll("pre code[class]").forEach(el => {
         el.classList.remove("focus");
         let lang = el.className.split(" ").find(v => v != "focus");
@@ -27,11 +28,11 @@ function init() {
         el.classList.add("lang-" + lang);
         el.querySelectorAll(".line[data-id]").forEach(el => el.remove());
       });
-      if (Mermaid) void initMermaid(preview);
+      if (Mermaid) void initMermaid(preview, heavyOpDelay);
       if (Highlighter == "Prism") {
-        void initPrism(preview);
+        void initPrism(preview, heavyOpDelay);
       } else if (Highlighter == "Shiki") {
-        void initShiki(preview);
+        void initShiki(preview, heavyOpDelay);
       }
     });
     ob.observe(preview, {
