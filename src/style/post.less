@@ -294,6 +294,7 @@ pre.output {
     &.stdout::before {
       content: "Output";
     }
+
     /* stylelint-disable no-descending-specificity */
     &::before {
       position: absolute;
@@ -339,4 +340,65 @@ pre.output {
   height: 1rem;
   margin: 0 0.15rem;
   color: rgb(var(--mdui-color-secondary));
+}
+
+.m-enhanced-markdown {
+  h1,
+  h2,
+  h3,
+  h4 {
+    position: relative;
+    display: block;
+
+    a {
+      color: rgb(var(--mdui-color-primary));
+      border-bottom: none;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      transition: 0.2s opacity;
+      transform: translateX(-100%);
+      width: 0.8em;
+      cursor: pointer;
+      pointer-events: none;
+    }
+
+    &:hover a {
+      opacity: 1;
+      border-bottom: none;
+      pointer-events: all;
+    }
+
+    a::before {
+      content: "#";
+    }
+  }
+}
+
+@media screen and (width <= 880px) {
+  .m-enhanced-markdown {
+    h1,
+    h2,
+    h3,
+    h4 {
+      width: calc(100% - 0.8em);
+      transition: 0.2s transform;
+      transition-delay: 0.3s;
+
+      a {
+        transition-delay: inherit;
+      }
+
+      &:hover {
+        transform: translateX(0.8em);
+        transition-delay: 0s;
+
+        a {
+          transition-delay: 0s;
+        }
+      }
+    }
+  }
 }

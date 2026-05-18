@@ -1,6 +1,7 @@
 import { initComments } from "./comment";
 import { handlePasswordForm } from "./locked";
 import { initCodeBlockAction, initPrism, initShiki } from "./code-block";
+import "@mdui/icons/link";
 
 import "@/style/post.less";
 import "virtual:components/post";
@@ -83,6 +84,47 @@ function countMoney(str: string) {
   return count;
 }
 
+function initAnchor(article: HTMLElement) {
+  const anchors: HTMLElement[] = [];
+  article.querySelectorAll("h1, h2, h3, h4").forEach(el => {
+    const a = document.createElement("a");
+    const slug = encodeURIComponent(
+      el.textContent
+        .toLowerCase()
+        .replace(
+          /[ `~!@#$%^&*()_=+[\]{}\\|:;"',./<>?，。《》？；：“‘【】、·]/g,
+          "-"
+        )
+        .replace(/-{2,}/g, "-")
+        .replace(/(^-|-$)/g, "")
+    );
+    a.id = "article-" + slug;
+    a.addEventListener("click", e => {
+      e.preventDefault();
+      if (location.hash != "#" + slug) {
+        location.hash = slug;
+      } else {
+        hashHandler();
+      }
+    });
+    el.appendChild(a);
+    anchors.push(a);
+  });
+  const hashHandler = (initialize?: unknown) => {
+    const hash = location.hash;
+    if (hash) {
+      anchors
+        .find(v => v.id == "article-" + hash.slice(1))
+        ?.scrollIntoView({
+          behavior: initialize === true ? "auto" : "smooth"
+        });
+    }
+  };
+  window.addEventListener("hashchange", hashHandler);
+  hashHandler(true);
+  return () => window.removeEventListener("hashchange", hashHandler);
+}
+
 function initArticle(article: HTMLElement, _heavyOpDelay?: Promise<void>) {
   const heavyOpDelay = _heavyOpDelay ?? Promise.resolve();
   const { Highlighter, FancyBox, KaTeX, Mermaid, ParseDownCompatibility } =
@@ -97,6 +139,7 @@ function initArticle(article: HTMLElement, _heavyOpDelay?: Promise<void>) {
       });
     });
   }
+  initAnchor(article);
   // enforce Mermaid processed before code block
   // this is required to prevent codeblock logic break Mermaid.
   // initMermaid will modify DOM struct make code block logic cannot process it as code block
@@ -158,15 +201,13 @@ export function init(el: HTMLElement) {
   if (password) {
     handlePasswordForm(password);
   }
-}
-
-export function destroy() {
-  // some mermaid sh*t
-  document
-    .querySelectorAll(
-      "#zenuml-intersection-detector-container, #headlessui-portal-root, .mermaidTooltip, .textarea-hidden-div"
-    )
-    .forEach(el => el.remove());
+  return () => {
+    document
+      .querySelectorAll(
+        "#zenuml-intersection-detector-container, #headlessui-portal-root, .mermaidTooltip, .textarea-hidden-div"
+      )
+      .forEach(el => el.remove());
+  };
 }
 
 export { initPrism, initShiki };

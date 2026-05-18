@@ -27,9 +27,9 @@ import {
   initExSearchEnhanced
 } from "./modules/ExSearch";
 
+type DestroyCb = (el: HTMLElement) => void | Promise<void>;
 interface IInit {
-  init?: (el: HTMLElement) => void | Promise<void>;
-  destroy?: (el: HTMLElement) => void | Promise<void>;
+  init?: (el: HTMLElement) => DestroyCb | Promise<DestroyCb | void> | void;
 }
 
 function loadPageScript(type: string): Promise<IInit> {
@@ -127,7 +127,7 @@ function initOnce() {
   };
 
   let PjaxBackward = false;
-  let cleanUpCb: undefined | ((el: HTMLElement) => unknown) = void 0;
+  let cleanUpCb: void | ((el: HTMLElement) => unknown) = void 0;
 
   mGlobal.pjax = new Pjax({
     elements: "a[href]:not([target]), form[action]",
@@ -167,8 +167,7 @@ function initOnce() {
           );
           wrapper.classList.add(className);
         }
-        await scripts.init?.(el as HTMLDivElement);
-        cleanUpCb = scripts.destroy;
+        cleanUpCb = await scripts.init?.(el as HTMLDivElement);
         this.onSwitch(oldEl, el);
       }
     }
