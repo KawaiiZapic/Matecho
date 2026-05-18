@@ -130,6 +130,7 @@ function initOnce() {
   let cleanUpCb: undefined | ((el: HTMLElement) => unknown) = void 0;
 
   mGlobal.pjax = new Pjax({
+    elements: "a[href]:not([target]), form[action]",
     selectors: [
       "head > title",
       "#matecho-pjax-main",

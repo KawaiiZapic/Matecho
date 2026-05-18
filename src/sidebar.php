@@ -40,11 +40,14 @@ if (!defined('__TYPECHO_ROOT_DIR__'))
                         }
                         ?>
                         <a href="<?php $category->permalink() ?>">
-                            <mdui-list-item rounded <?php if ($isCurrentCategory) { echo 'active'; } ?> class="pl-40px" <?php Matecho::activePage($this, "category", $category->mid); ?>>
+                            <mdui-list-item rounded <?php if ($isCurrentCategory) {
+                                echo 'active';
+                            } ?> class="pl-40px"
+                                <?php Matecho::activePage($this, "category", $category->mid); ?>>
                                 <?php echo $category->name ?>
                                 <span class="text-xs opacity-60"
                                     slot="description"><?php echo $category->description ?></span>
-                                    
+
                                 <span slot="end-icon"><?php echo $category->count ?></span>
                             </mdui-list-item>
                         </a>
@@ -66,20 +69,20 @@ if (!defined('__TYPECHO_ROOT_DIR__'))
                         <a href="<?php $tags->permalink() ?>">
                             <mdui-list-item rounded class="pl-40px" <?php Matecho::activePage($this, "tag", $tags->mid); ?>>
                                 <?php echo $tags->name; ?>
-                                <span class="text-xs opacity-60"
-                                    slot="description"><?php echo $tags->description ?></span>
+                                <span class="text-xs opacity-60" slot="description"><?php echo $tags->description ?></span>
                                 <span slot="end-icon"><?php echo $tags->count ?></span>
                             </mdui-list-item>
                         </a>
                     <?php } ?>
                 </mdui-collapse-item>
             </mdui-collapse>
-            <mdui-divider class="my-2"></mdui-divider>
             <?php
             $this->widget('Widget_Contents_Page_List')->to($page);
             /** @var \Widget\Contents\Page\Rows $page */
-            while ($page->next()) {
-                ?>
+            if ($page->___length() > 0) { ?>
+                <mdui-divider class="my-2"></mdui-divider>
+            <?php }
+            while ($page->next()) { ?>
                 <a href="<?php $page->permalink() ?>">
                     <mdui-list-item rounded <?php Matecho::activePage($this, "page", $page->cid); ?>>
                         <?php
@@ -90,6 +93,17 @@ if (!defined('__TYPECHO_ROOT_DIR__'))
                     </mdui-list-item>
                 </a>
             <?php } ?>
+            <mdui-divider class="my-2"></mdui-divider>
+            <a href="<?php $this->options->adminUrl(); ?>" target="_blank" nofollow>
+                <mdui-list-item rounded>
+                    <?php if ($this->user->hasLogin()) { ?>
+                        <mdui-icon-settings slot="icon"></mdui-icon-settings>
+                    <?php } else { ?>
+                        <mdui-icon-login slot="icon"></mdui-icon-login>
+                    <?php } ?>
+                    管理面板
+                </mdui-list-item>
+            </a>
         </mdui-list>
     </nav>
 </mdui-navigation-drawer>

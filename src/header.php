@@ -67,13 +67,6 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
                 <input type="hidden" name="s">
             </form>
         </div>
-        <mdui-button-icon name="管理面板" href="<?php $this->options->adminUrl(); ?>" target="_blank" nofollow>
-            <?php if ($this->user->hasLogin()){ ?>
-                <mdui-icon-settings></mdui-icon-settings>
-            <?php } else { ?>
-                <mdui-icon-login></mdui-icon-login>
-            <?php } ?>
-        </mdui-button-icon>
     </mdui-top-app-bar>
     <main id="matecho-main">
         <?php $this->need('sidebar.php'); ?>
