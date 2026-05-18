@@ -43,11 +43,12 @@ function themeConfig(Form $form): void {
     } else {
         $form->addInput(new Radio("ColorSchemeCache", [1 => "启用", 0 => "禁用"], 0, "颜色主题样式缓存", "缓存主题样式到本地静态文件, 可以利用缓存加快网页加载速度, 需要主题目录可写, 不需要持久化, 在文件不存在时自动生成."));
     }
-    $form->addInput(new Radio("EnableFancyBox", [1 => "自动", 0 => "禁用"], 1, "FancyBox", "允许用户放大查看文章内的图片"));
+    $form->addInput(new Radio("EnableFancyBox", [1 => "自动", 0 => "禁用"], 1, "FancyBox", "允许用户放大查看文章内的图片."));
     $form->addInput(new Radio("CodeHighlighter", ["Prism" => "Prism", "Shiki" => "Shiki", "none" => "禁用"], "Prism", "代码高亮", "选择代码高亮引擎, Prism(~50KB)更小更快, Shiki(~600KB)更大更准确."));
     $form->addInput(new Radio("EnableKaTeX", [1 => "自动", 0 => "禁用"], 1, "KaTeX", "渲染LaTeX公式, 在使用\$或者\$\$包裹LaTeX公式即可自动渲染."));
     $form->addInput(new Radio("EnableMermaid", [1 => "自动", 0 => "禁用"], 1, "Mermaid", "渲染流程图, 将Mermaid代码包括在mermaid代码块(```mermaid```)中, 即可自动渲染."));
     $form->addInput(new Radio("ExSearchIntegration", ["enhanced" => "增强", "normal" => "普通"], "enhanced", "ExSearch即时搜索集成", "ExSearch集成模式, 在普通的状态下使用原版搜索框, 在增强状态下使用主题自带的搜索框."));
+    $form->addInput(new Radio("ParsedownCompatibility", [1 => "启用", 0 => "禁用"], 0, "Parsedown兼容", "主题默认情况下只兼容Typecho自带的Hyperdown解析器, 若使用了插件替换为Parsedown, 请启用此选项."));
     $form->addInput(new Text("GlotAccessToken", null, "", "glot.io 访问密钥", "填入后, 可以通过调用glot.io API直接运行代码块中的代码, 详细获取方法请查看文档,"));
     $form->addInput(new Text("BeiAnText", null, "", "备案信息", "显示在页脚版权信息下方"));
     $form->addInput(new Textarea("ExtraCode", null, "", "页脚HTML代码", "插入统计代码或者额外的插件"));
@@ -276,11 +277,12 @@ class Matecho {
     static function generateJSOptions(): void {
         $options = Helper::options();
         echo "<script>window.__MATECHO_OPTIONS__=" . json_encode([
-            "KaTeX" => $options->EnableKaTeX ? true : false,
-            "FancyBox" => $options->EnableFancyBox ? true : false,
-            "Mermaid" => $options -> EnableMermaid ? true : false,
+            "KaTeX" => boolval($options->EnableKaTeX),
+            "FancyBox" => boolval($options->EnableFancyBox),
+            "Mermaid" => boolval($options->EnableMermaid),
             "Highlighter" => $options->CodeHighlighter ?? "Prism",
-            "IsCodeRunningEnabled" => extension_loaded("curl") && $options->GlotAccessToken,
+            "IsCodeRunningEnabled" => boolval(extension_loaded("curl") && $options->GlotAccessToken),
+            "ParseDownCompatibility" => boolval($options->EnableMermaid),
             "ExSearch" => $options->ExSearchIntegration === "enhanced" && self::hasLogin() ? self::ExSearchURL() : ""
         ]) . ";</script>";
     }

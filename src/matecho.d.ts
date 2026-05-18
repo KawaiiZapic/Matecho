@@ -40,6 +40,7 @@ declare interface Window {
     KaTeX: boolean;
     Mermaid: boolean;
     ExSearch: string;
+    ParseDownCompatibility: boolean;
     Highlighter: "Prism" | "Shiki" | "none";
   };
   ExSearchCall: (item: JQuery) => void;

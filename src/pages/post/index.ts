@@ -85,7 +85,18 @@ function countMoney(str: string) {
 
 function initArticle(article: HTMLElement, _heavyOpDelay?: Promise<void>) {
   const heavyOpDelay = _heavyOpDelay ?? Promise.resolve();
-  const { Highlighter, FancyBox, KaTeX, Mermaid } = window.__MATECHO_OPTIONS__;
+  const { Highlighter, FancyBox, KaTeX, Mermaid, ParseDownCompatibility } =
+    window.__MATECHO_OPTIONS__;
+  if (ParseDownCompatibility) {
+    article.querySelectorAll("pre > code[class*=language-]").forEach(el => {
+      const list = Array.from(el.classList.values());
+      list.forEach(v => {
+        if (v.startsWith("language-")) {
+          el.classList.add(v.replace("language-", "lang-"));
+        }
+      });
+    });
+  }
   // enforce Mermaid processed before code block
   // this is required to prevent codeblock logic break Mermaid.
   // initMermaid will modify DOM struct make code block logic cannot process it as code block
