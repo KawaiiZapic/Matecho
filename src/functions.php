@@ -434,7 +434,7 @@ class Matecho {
                 <span class="flex-grow text-right text-sm opacity-60">#<?php echo $comments->coid; ?></span>
             </div>
             <div class="pl-56px">
-                <div class="mdui-prose mb-2">
+                <div class="mdui-prose m-enhanced-markdown mb-2">
                     <?php if($comments->levels > 0) { ?>
                         <a class="text-sm" href="#comment-<?php echo $comments->parent; ?>">回复 #<?php echo $comments->parent; ?>:</a>
                     <?php } ?>
@@ -481,7 +481,7 @@ class Matecho {
                 <span class="flex-grow text-right text-sm opacity-60">#<?php echo $comments->coid; ?></span>
             </div>
             <div class="pl-35px">
-                <div class="mdui-prose">
+                <div class="mdui-prose m-enhanced-markdown">
                     <?php if($comments->levels > 1) { ?>
                         <a class="text-sm" href="#comment-<?php echo $comments->parent; ?>">回复 #<?php echo $comments->parent; ?>:</a>
                     <?php } ?>

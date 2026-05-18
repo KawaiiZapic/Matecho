@@ -49,7 +49,7 @@ $this->need('header.php');
                     </div>
                 </div>
             </div>
-            <article class="mdui-prose mt-8 box-border line-numbers">
+            <article class="mdui-prose m-enhanced-markdown mt-8 box-border line-numbers">
                 <?php echo $this->content(); ?>
             </article>
             <?php
