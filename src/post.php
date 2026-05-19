@@ -31,8 +31,10 @@ $this->need('header.php');
         </div>
         <div class="w-full px-4 box-border">
             <div class="flex gap-2">
-                <mdui-avatar aria-label="<?php $this->author() ?>"
-                    src="<?php Matecho::Gravatar($this->author->mail); ?>"></mdui-avatar>
+                <mdui-avatar aria-label="<?php $this->author() ?>">
+                    <img src="<?php Matecho::Gravatar($this->author->mail, 40); ?>"
+                        srcset="<?php Matecho::GravatarSrcSet($this->author->mail, 40); ?>">
+                </mdui-avatar>
                 <div class="flex flex-col">
                     <div>
                         <?php $this->author(); ?>
@@ -96,7 +98,12 @@ $this->need('header.php');
                         data-pjax-state>
                         <?php if ($this->user->hasLogin()) { ?>
                             <div class="flex items-center gap-2">
-                                <mdui-avatar src="<?php Matecho::Gravatar($this->user->mail) ?>"></mdui-avatar>
+                                <mdui-avatar>
+                                    <img
+                                        src="<?php Matecho::Gravatar($this->user->mail, 40) ?>"
+                                        srcset="<?php Matecho::GravatarSrcSet($this->user->mail, 40) ?>"
+                                    >
+                                </mdui-avatar>
                                 <span><?php $this->user->screenName(); ?></span>
                             </div>
                         <?php } else { ?>
