@@ -25,7 +25,7 @@ $this->need("header.php");
                 } ?>
             </div>
         </div>
-        <div class="matecho-article-cover mb-8 md:rounded-xl transition block h-240px w-full overflow-hidden bg-center bg-cover"
+        <div class="matecho-article-cover mb-8 md:rounded-xl transition block h-240px w-full overflow-hidden bg-center bg-cover bg-m-surface-container-low"
             style="background-image: url('<?php Matecho::cover($this); ?>')">
         </div>
         <div class="w-full px-4 box-border">
