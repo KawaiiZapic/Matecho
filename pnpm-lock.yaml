@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
+  katex@0.16.45: 90512151dc686b3480af32485572eb79ed50be02717a5f90bb02f45ed6e9e663
   mermaid@11.14.0: a1cdf9c694609f23a78070dc735455d52daaeffcffbe0b4be4a2e1461c4435c6
   pjax@0.2.8: 292a19abdde9cd84677257a04c7f9dbf40615e2bf0719657cf10ecb6ce51f5ca
 
@@ -71,7 +72,7 @@ importers:
         version: 1.18.1
       katex:
         specifier: ^0.16.45
-        version: 0.16.45
+        version: 0.16.45(patch_hash=90512151dc686b3480af32485572eb79ed50be02717a5f90bb02f45ed6e9e663)
       less:
         specifier: ^4.6.4
         version: 4.6.4
@@ -5526,7 +5527,7 @@ snapshots:
 
   json-stable-stringify-without-jsonify@1.0.1: {}
 
-  katex@0.16.45:
+  katex@0.16.45(patch_hash=90512151dc686b3480af32485572eb79ed50be02717a5f90bb02f45ed6e9e663):
     dependencies:
       commander: 8.3.0
 
@@ -5759,7 +5760,7 @@ snapshots:
       dagre-d3-es: 7.0.14
       dayjs: 1.11.19
       dompurify: 3.3.1
-      katex: 0.16.45
+      katex: 0.16.45(patch_hash=90512151dc686b3480af32485572eb79ed50be02717a5f90bb02f45ed6e9e663)
       khroma: 2.1.0
       lodash-es: 4.18.1
       marked: 16.4.2

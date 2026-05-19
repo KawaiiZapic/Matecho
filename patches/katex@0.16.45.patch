@@ -1,0 +1,13 @@
+diff --git a/dist/contrib/auto-render.mjs b/dist/contrib/auto-render.mjs
+index 7bd38c6c360f5598696add12a71103d9e696834a..2a35e0a4e2b7f4f14512c176f486f2ff805d5afe 100644
+--- a/dist/contrib/auto-render.mjs
++++ b/dist/contrib/auto-render.mjs
+@@ -119,7 +119,7 @@ var _renderElem = function renderElem(elem, optionsCopy) {
+       var textContentConcat = (_childNode$textConten = childNode.textContent) != null ? _childNode$textConten : "";
+       var sibling = childNode.nextSibling;
+       var nSiblings = 0;
+-      while (sibling && sibling.nodeType === Node.TEXT_NODE) {
++      while (sibling && (sibling.nodeType === Node.TEXT_NODE || (sibling.nodeType === Node.ELEMENT_NODE && sibling.tagName === "BR"))) {
+         var _sibling$textContent;
+         textContentConcat += (_sibling$textContent = sibling.textContent) != null ? _sibling$textContent : "";
+         sibling = sibling.nextSibling;
