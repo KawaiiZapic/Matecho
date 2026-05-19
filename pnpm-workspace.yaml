@@ -3,5 +3,5 @@ allowBuilds:
   simple-git-hooks: false
 patchedDependencies:
   pjax@0.2.8: patches/pjax@0.2.8.patch
-  mermaid@11.14.0: patches/mermaid@11.14.0.patch
-  katex@0.16.45: patches/katex@0.16.45.patch
+  katex@0.16.47: patches/katex@0.16.47.patch
+  mermaid: patches/mermaid@11.15.0.patch
