@@ -7,6 +7,8 @@
     "@fancyapps/ui": "^6.1.13",
     "@mdui/icons": "^1.0.3",
     "@mermaid-js/mermaid-zenuml": "^0.2.2",
+    "@prettier/plugin-oxc": "^0.1.4",
+    "@prettier/plugin-php": "^0.25.0",
     "@types/http-proxy": "^1.17.17",
     "@types/jquery": "^3.5.30",
     "@types/katex": "^0.16.8",
@@ -27,13 +29,13 @@
     "mdui": "^2.1.4",
     "mermaid": "^11.14.0",
     "nprogress": "^0.2.0",
-    "oxfmt": "^0.45.0",
     "oxlint": "^1.60.0",
     "oxlint-tsgolint": "^0.21.1",
     "pjax": "^0.2.8",
     "postcss": "^8.5.10",
     "postcss-gap-properties": "^7.0.0",
     "postcss-load-config": "^6.0.1",
+    "prettier": "^3.8.3",
     "prismjs": "^1.30.0",
     "shiki": "^4.0.2",
     "simple-git-hooks": "^2.13.1",
@@ -49,23 +51,24 @@
     "build": "vite build",
     "prepare": "simple-git-hooks",
     "type-check": "tsc --noEmit",
+    "format": "prettier -w -u --cache --log-level error .",
     "lint": "oxlint --max-warnings 0 . && stylelint --max-warnings 0 **/*.{c,le}ss",
     "lint:fix": "oxlint --max-warnings 0 --fix . && stylelint --max-warnings 0 --fix **/*.{c,le}ss && oxfmt"
   },
   "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
+    "pre-commit": "pnpm exec lint-staged"
   },
   "lint-staged": {
     "*.{js,ts}": [
       "oxlint --fix --max-warnings 0",
-      "oxfmt"
+      "prettier -w --cache"
     ],
     "*.{c,le}ss": [
       "stylelint --fix --max-warnings 0",
-      "oxfmt"
+      "prettier -w --cache"
     ],
     "!(*.{css,less,js,ts})": [
-      "oxfmt --no-error-on-unmatched-pattern"
+      "prettier -w -u --cache"
     ]
   },
   "version": "0.5.2"

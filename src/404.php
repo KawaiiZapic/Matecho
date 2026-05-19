@@ -1,8 +1,10 @@
 <?php
-if (!defined('__TYPECHO_ROOT_DIR__')) exit;
+if (!defined("__TYPECHO_ROOT_DIR__")) {
+  exit();
+}
 
 /** @var \Widget\Archive $this */
-$this->need('header.php');
+$this->need("header.php");
 Typecho\Plugin::export();
 ?>
     <div id="matecho-app-bar-large-label">
@@ -17,6 +19,6 @@ Typecho\Plugin::export();
     </div>
     <div class="pl-42px">
         <mdui-button onclick="history.back()">返回上一页</mdui-button>
-        <mdui-button href="<?php $this->options->siteUrl() ?>" variant="outlined">返回首页</mdui-button>
+        <mdui-button href="<?php $this->options->siteUrl(); ?>" variant="outlined">返回首页</mdui-button>
     </div>
-<?php $this->need('footer.php'); ?>
+<?php $this->need("footer.php"); ?>

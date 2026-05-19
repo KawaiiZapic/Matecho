@@ -1,7 +1,7 @@
 <?php
-if (!defined('__TYPECHO_ROOT_DIR__'))
-    exit;
-
+if (!defined("__TYPECHO_ROOT_DIR__")) {
+  exit();
+}
 /** @var \Widget\Archive $this */
 ?>
 
@@ -9,7 +9,10 @@ if (!defined('__TYPECHO_ROOT_DIR__'))
     <nav>
         <mdui-list id="matecho-sidebar-list">
             <a href="/">
-                <mdui-list-item rounded <?php Matecho::activePage($this, "index"); ?>>
+                <mdui-list-item rounded <?php Matecho::activePage(
+                  $this,
+                  "index"
+                ); ?>>
                     <mdui-icon-home slot="icon"></mdui-icon-home>
                     首页
                 </mdui-list-item>
@@ -23,35 +26,45 @@ if (!defined('__TYPECHO_ROOT_DIR__'))
                         分类
                     </mdui-list-item>
                     <?php
-                    $this->widget('Widget_Metas_Category_List')->to($category);
+                    $this->widget("Widget_Metas_Category_List")->to($category);
                     /** @var \Widget\Metas\Category\Rows $category */
                     while ($category->next()) {
-                        if ($category->parent != 0)
-                            continue;
-                        $archiveType = $this->getArchiveType();
-                        $isCurrentCategory = false;
-                        if ($archiveType == "post") {
-                            foreach ($this->categories as $cat) {
-                                if ($cat["mid"] == $category->mid) {
-                                    $isCurrentCategory = true;
-                                    break;
-                                }
-                            }
-                        }
-                        ?>
-                        <a href="<?php $category->permalink() ?>">
-                            <mdui-list-item rounded <?php if ($isCurrentCategory) {
-                                echo 'active';
-                            } ?> class="pl-40px"
-                                <?php Matecho::activePage($this, "category", $category->mid); ?>>
-                                <?php echo $category->name ?>
-                                <span class="text-xs opacity-60"
-                                    slot="description"><?php echo $category->description ?></span>
 
-                                <span slot="end-icon"><?php echo $category->count ?></span>
+                      if ($category->parent != 0) {
+                        continue;
+                      }
+                      $archiveType = $this->getArchiveType();
+                      $isCurrentCategory = false;
+                      if ($archiveType == "post") {
+                        foreach ($this->categories as $cat) {
+                          if ($cat["mid"] == $category->mid) {
+                            $isCurrentCategory = true;
+                            break;
+                          }
+                        }
+                      }
+                      ?>
+                        <a href="<?php $category->permalink(); ?>">
+                            <mdui-list-item rounded <?php if (
+                              $isCurrentCategory
+                            ) {
+                              echo "active";
+                            } ?> class="pl-40px"
+                                <?php Matecho::activePage(
+                                  $this,
+                                  "category",
+                                  $category->mid
+                                ); ?>>
+                                <?php echo $category->name; ?>
+                                <span class="text-xs opacity-60"
+                                    slot="description"><?php echo $category->description; ?></span>
+
+                                <span slot="end-icon"><?php echo $category->count; ?></span>
                             </mdui-list-item>
                         </a>
-                    <?php } ?>
+                    <?php
+                    }
+                    ?>
                 </mdui-collapse-item>
                 <mdui-collapse-item value="tags">
                     <mdui-list-item slot="header" rounded>
@@ -60,39 +73,50 @@ if (!defined('__TYPECHO_ROOT_DIR__'))
                         标签
                     </mdui-list-item>
                     <?php
-                    $this->widget('Widget_Metas_Tag_Cloud')->to($tags);
+                    $this->widget("Widget_Metas_Tag_Cloud")->to($tags);
                     /** @var \Widget\Metas\Tag\Cloud $tags */
                     while ($tags->next()) {
-                        if ($tags->parent != 0)
-                            continue;
-                        ?>
-                        <a href="<?php $tags->permalink() ?>">
-                            <mdui-list-item rounded class="pl-40px" <?php Matecho::activePage($this, "tag", $tags->mid); ?>>
+                      if ($tags->parent != 0) {
+                        continue;
+                      } ?>
+                        <a href="<?php $tags->permalink(); ?>">
+                            <mdui-list-item rounded class="pl-40px" <?php Matecho::activePage(
+                              $this,
+                              "tag",
+                              $tags->mid
+                            ); ?>>
                                 <?php echo $tags->name; ?>
-                                <span class="text-xs opacity-60" slot="description"><?php echo $tags->description ?></span>
-                                <span slot="end-icon"><?php echo $tags->count ?></span>
+                                <span class="text-xs opacity-60" slot="description"><?php echo $tags->description; ?></span>
+                                <span slot="end-icon"><?php echo $tags->count; ?></span>
                             </mdui-list-item>
                         </a>
-                    <?php } ?>
+                    <?php
+                    }
+                    ?>
                 </mdui-collapse-item>
             </mdui-collapse>
             <?php
-            $this->widget('Widget_Contents_Page_List')->to($page);
+            $this->widget("Widget_Contents_Page_List")->to($page);
             /** @var \Widget\Contents\Page\Rows $page */
             if ($page->___length() > 0) { ?>
                 <mdui-divider class="my-2"></mdui-divider>
             <?php }
             while ($page->next()) { ?>
-                <a href="<?php $page->permalink() ?>">
-                    <mdui-list-item rounded <?php Matecho::activePage($this, "page", $page->cid); ?>>
+                <a href="<?php $page->permalink(); ?>">
+                    <mdui-list-item rounded <?php Matecho::activePage(
+                      $this,
+                      "page",
+                      $page->cid
+                    ); ?>>
                         <?php
                         $icon = Matecho::pageIcon($page);
                         echo "<mdui-icon-$icon slot=\"icon\"></mdui-icon-$icon>";
                         ?>
-                        <?php echo $page->title ?>
+                        <?php echo $page->title; ?>
                     </mdui-list-item>
                 </a>
-            <?php } ?>
+            <?php }
+            ?>
             <mdui-divider class="my-2"></mdui-divider>
             <a href="<?php $this->options->adminUrl(); ?>" target="_blank" nofollow>
                 <mdui-list-item rounded>

@@ -1,5 +1,4 @@
 {
-  "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "tabWidth": 2,
   "useTabs": false,
   "singleQuote": false,
@@ -11,6 +10,8 @@
   "arrowParens": "avoid",
   "htmlWhitespaceSensitivity": "ignore",
   "endOfLine": "lf",
-  "sortPackageJson": false,
-  "ignorePatterns": ["dist/**/*", "node_modules/**/*", "pnpm-lock.yaml"]
+  "plugins": ["@prettier/plugin-php"],
+  "phpVersion": "7.4",
+  "braceStyle": "1tbs",
+  "trailingCommaPHP": false
 }

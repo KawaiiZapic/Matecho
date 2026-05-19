@@ -1,7 +1,9 @@
 <?php
-if (!defined('__TYPECHO_ROOT_DIR__'))
-    exit;
+if (!defined("__TYPECHO_ROOT_DIR__")) {
+  exit();
+}
 Typecho\Plugin::export();
+
 /** @var \Widget\Archive $this */
 ?>
 </div>
@@ -14,7 +16,7 @@ Typecho\Plugin::export();
             </a>
         </div>
         <?php if (Matecho::$BeiAnText) { ?>
-            <div class="text-sm opacity-80 mb-1"><?php echo Matecho::$BeiAnText ?></div>
+            <div class="text-sm opacity-80 mb-1"><?php echo Matecho::$BeiAnText; ?></div>
         <?php } ?>
         <div class="text-sm flex flex-gap-2 items-center justify-center">
             <?php if (Matecho::$LinkBilibili) { ?>
