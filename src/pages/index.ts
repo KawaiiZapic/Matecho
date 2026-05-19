@@ -53,7 +53,7 @@ export function init() {
             }
           );
           document.addEventListener(
-            "pjax:complete",
+            "pjax:success",
             () => {
               abort.abort();
               parent.after(placeholder);
