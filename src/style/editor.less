@@ -1,13 +1,25 @@
-.shiki .line {
-  position: static;
+#wmd-preview code,
+#wmd-preview pre {
+  background-color: #eee;
 }
 
-#wmd-preview pre.mermaid {
-  &:first-child {
-    margin-top: 0.5rem;
+#wmd-preview pre {
+  & > code {
+    background: none;
   }
 
-  &[data-processed="true"] {
-    background: transparent;
+  &.shiki .line {
+    position: static;
+    background-color: transparent;
+  }
+
+  &.mermaid {
+    &:first-child {
+      margin-top: 0.5rem;
+    }
+
+    &[data-processed="true"] {
+      background: transparent;
+    }
   }
 }
