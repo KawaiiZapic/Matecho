@@ -11,17 +11,25 @@ Material Design typecho theme base on MDUI.
 4. 支持`Prism`/`Shiki`代码高亮
 5. 支持`KaTeX`公式渲染
 6. 支持`Mermaid`图表绘制
-7. 支持`OpenGraph`/`TwitterCard`, 在受支持的应用中以卡片形式展示文章链接
-8. `ExSearch`前端即时搜索增强集成(使用主题自带样式而不是使用它默认的搜索弹窗)
-9. `Mailer`邮件插件集成
-10. 完善的响应式支持, 手机电脑共用一套主题
-11. 使用最新的Web技术构建, 并向前兼容到`Chrome >= 63`, `Firefox >= 67`, `Safari >= 11`(对于较旧的浏览器仅包括有限的支持)
+7. 丰富的编辑器集成, 在Typecho后台的编辑器中即时渲染图表, 公式, 以及代码高亮
+8. 通过glot.io在沙箱中即时运代码块中的代码并显示结果, 允许就地编辑修改并执行新的代码, 支持数十种语言
+9. 支持`OpenGraph`/`TwitterCard`, 在受支持的应用中以卡片形式展示文章链接
+10. `ExSearch`前端即时搜索增强集成(使用主题自带样式而不是使用它默认的搜索弹窗)
+11. `Mailer`邮件插件集成
+12. 完善的响应式支持, 手机电脑共用一套主题
+13. 使用最新的Web技术构建, 并向前兼容到`Chrome >= 666`, `Firefox >= 67`, `Safari >= 12`(对于较旧的浏览器仅包括有限的支持)
 
 ## 安装
 
 1. 从Releases下载最新版的主题文件或者Action中下载自动构建的测试版主题
 2. 将主题解压到`/usr/themes/Matecho/`中
 3. 在Typecho设置中启用主题
+
+## 配置glot.io代码运行
+
+1. 请确保启用了 PHP 的 cURL 拓展
+2. 在[https://glot.io/auth/page/simple/register](https://glot.io/auth/page/simple/register)中注册账号
+3. 从[https://glot.io/account/token](https://glot.io/account/token)复制API token并填写到主题设置中
 
 ## 自定义
 
