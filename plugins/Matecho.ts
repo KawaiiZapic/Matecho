@@ -259,8 +259,18 @@ export default (config?: MatechoPluginConfig): Plugin => {
           proxy.on("proxyReq", () => {
             AutoComponents.preloaded = [];
           });
-          proxy.on("error", () => {
+          proxy.on("error", e => {
+            void setTimeout(() => {
+              server.hot.send({
+                type: "error",
+                err: {
+                  message: e.message,
+                  stack: e.stack ?? ""
+                }
+              });
+            });
             if (phpServer != null) {
+              logger.info("Built-in Typecho stop responding, restarting...");
               phpServer.kill();
               phpServer = createPhpServer();
             }
