@@ -73,7 +73,7 @@ export async function initMermaid(
     startOnLoad: false
   });
   await heavyOpDelay;
-  void mermaid.run({
+  return mermaid.run({
     nodes: mapNodes
   });
 }
