@@ -1,4 +1,5 @@
 @import url("./markdown.less");
+@import url("./variables.less");
 
 .matecho-comment-parent {
   margin-bottom: 0.5rem;
@@ -349,6 +350,7 @@ pre.output {
   h4 {
     position: relative;
     display: block;
+    transition: 0.2s transform;
 
     a {
       color: rgb(var(--mdui-color-primary));
@@ -377,14 +379,13 @@ pre.output {
   }
 }
 
-@media screen and (width <= 880px) {
+@media (width < (@breakpoint-md + 20px * 2)) {
   .m-enhanced-markdown {
     h1,
     h2,
     h3,
     h4 {
       width: calc(100% - 0.8em);
-      transition: 0.2s transform;
       transition-delay: 0.3s;
 
       a {

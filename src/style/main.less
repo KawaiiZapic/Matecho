@@ -1,11 +1,12 @@
 @import url("mdui/mdui.css");
 @import url("nprogress/nprogress.css");
+@import url("./variables.less");
 
 html,
 body {
   padding: 0;
   margin: 0;
-  scroll-padding-top: 64px;
+  scroll-padding-top: @top-bar-h;
 }
 
 [href] {
@@ -100,10 +101,10 @@ body {
 }
 
 #matecho-pjax-main {
-  min-height: calc(100vh - 184px);
+  min-height: calc(100vh - (@footer-h + @top-bar-h));
 }
 
-@media (width < 840px) {
+@media (width < @breakpoint-md) {
   #matecho-main {
     padding-left: 0 !important;
   }
@@ -134,10 +135,12 @@ body {
   animation: slide-out 0.5s cubic-bezier(0.2, 0, 0, 1);
 }
 
+@slide-ani-offset: 75px;
+
 @keyframes slide-in {
   from {
     opacity: 0;
-    transform: translateX(75px);
+    transform: translateX(@slide-ani-offset);
   }
 
   to {
@@ -149,7 +152,7 @@ body {
 @keyframes slide-out {
   from {
     opacity: 0;
-    transform: translateX(-75px);
+    transform: translateX(-@slide-ani-offset);
   }
 
   to {
@@ -158,7 +161,7 @@ body {
   }
 }
 
-@media (width >=1024px) {
+@media (width > @breakpoint-lg) {
   body ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
