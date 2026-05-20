@@ -63,6 +63,10 @@ export function init() {
                 left: pSize.left + "px",
                 top: pSize.top + "px"
               });
+              (parent as HTMLElement).style.setProperty(
+                "--fixed-size",
+                pSize.width + "px"
+              );
               parent.classList.add("matecho-article-card__animating");
               if (pSize.top < 220) {
                 parent.classList.add("matecho-article-card__reverse");
