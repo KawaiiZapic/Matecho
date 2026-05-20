@@ -5,3 +5,6 @@ patchedDependencies:
   pjax@0.2.8: patches/pjax@0.2.8.patch
   katex@0.16.47: patches/katex@0.16.47.patch
   mermaid: patches/mermaid@11.15.0.patch
+updateConfig:
+  ignoreDependencies:
+    - "@types/jquery"
