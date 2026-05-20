@@ -35,6 +35,10 @@
   }
 }
 
+.matecho-article-cover {
+  background-color: rgb(var(--mdui-color-surface-container-low));
+}
+
 .matecho-article-animation__running .matecho-article-cover {
   visibility: hidden;
 }
@@ -50,7 +54,8 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .matecho-article-card {
+  .matecho-article-card,
+  .matecho-article-cover {
     background-color: rgb(var(--mdui-color-surface-container));
   }
 }
