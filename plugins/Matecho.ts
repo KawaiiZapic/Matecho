@@ -148,11 +148,24 @@ export default (config?: MatechoPluginConfig): Plugin => {
           _logger.info(msg, { timestamp: true });
         }
       };
+
+      const typechoBase = "node_modules/.cache/typecho";
+      const createPhpServer = () => {
+        const phpServer = spawn("php", ["-S", "127.0.0.1:11451"], {
+          cwd: typechoBase
+        });
+        phpServer.on("exit", () => {
+          const code = phpServer?.exitCode;
+          if (typeof code === "number" && code !== 0) {
+            this.error("PHP server crashed with exit code " + code);
+          }
+        });
+        return phpServer;
+      };
       if (
         typeof server.config.env.VITE_BACKEND_URL !== "string" ||
         server.config.env.VITE_BACKEND_URL === ""
       ) {
-        const typechoBase = "node_modules/.cache/typecho";
         try {
           execSync("php -v");
         } catch {
@@ -179,15 +192,7 @@ export default (config?: MatechoPluginConfig): Plugin => {
             cwd: typechoBase
           });
         }
-        phpServer = spawn("php", ["-S", "127.0.0.1:11451"], {
-          cwd: typechoBase
-        });
-        phpServer.on("exit", () => {
-          const code = phpServer?.exitCode;
-          if (typeof code === "number" && code !== 0) {
-            this.error("PHP server crashed with exit code " + code);
-          }
-        });
+        phpServer = createPhpServer();
         if (
           !(await existsAsync(
             path.join(typechoBase, "usr", "themes", "Matecho")
@@ -201,6 +206,9 @@ export default (config?: MatechoPluginConfig): Plugin => {
         }
         backend = "http://localhost:11451";
         logger.info("use built-in Typecho backend at " + backend);
+        process.addListener("exit", () => {
+          phpServer?.kill();
+        });
       } else {
         backend = new URL(server.config.env.VITE_BACKEND_URL).toString();
         logger.info("use Typecho backend at " + backend);
@@ -244,11 +252,18 @@ export default (config?: MatechoPluginConfig): Plugin => {
             },
             {
               target: backend,
-              selfHandleResponse: true
+              timeout: 5000,
+              proxyTimeout: 5000
             }
           );
           proxy.on("proxyReq", () => {
             AutoComponents.preloaded = [];
+          });
+          proxy.on("error", () => {
+            if (phpServer != null) {
+              phpServer.kill();
+              phpServer = createPhpServer();
+            }
           });
           proxy.web(req, res);
         });
