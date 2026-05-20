@@ -17,7 +17,7 @@ Material Design typecho theme base on MDUI.
 10. `ExSearch`前端即时搜索增强集成(使用主题自带样式而不是使用它默认的搜索弹窗)
 11. `Mailer`邮件插件集成
 12. 完善的响应式支持, 手机电脑共用一套主题
-13. 使用最新的Web技术构建, 并向前兼容到`Chrome >= 666`, `Firefox >= 67`, `Safari >= 12`(对于较旧的浏览器仅包括有限的支持)
+13. 使用最新的Web技术构建, 并向前兼容到`Chrome >= 66`, `Firefox >= 67`, `Safari >= 12`(对于较旧的浏览器仅包括有限的支持)
 
 ## 安装
 
