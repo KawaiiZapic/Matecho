@@ -30,6 +30,16 @@ Material Design typecho theme base on MDUI.
 1. 请确保启用了 PHP 的 cURL 拓展
 2. 在[https://glot.io/auth/page/simple/register](https://glot.io/auth/page/simple/register)中注册账号
 3. 从[https://glot.io/account/token](https://glot.io/account/token)复制API token并填写到主题设置中
+4. 在需要运行的代码块前添加`<!--{runnable}-->`注释
+   ````
+   <!--{runnable}-->
+   ```c
+   #include <stdio.h>
+   void main() {
+       printf("hello");
+   }
+   ```
+   ````
 
 ## 自定义
 
