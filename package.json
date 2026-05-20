@@ -37,7 +37,7 @@
     "postcss-load-config": "^6.0.1",
     "prettier": "^3.8.3",
     "prismjs": "^1.30.0",
-    "shiki": "^4.0.2",
+    "shiki": "^4.1.0",
     "simple-git-hooks": "^2.13.1",
     "stylelint": "^17.11.1",
     "stylelint-config-standard": "^40.0.0",
