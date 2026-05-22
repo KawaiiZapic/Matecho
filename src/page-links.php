@@ -11,9 +11,15 @@ if (!defined("__TYPECHO_ROOT_DIR__")) {
 
 /** @var \Widget\Archive $this */
 $this->need("header.php");
-$links = Matecho::links();
-$linksCount = count($links);
-?>
+$hasLinksError = null;
+try {
+  $links = Matecho::links();
+  $linksCount = count($links);
+} catch (Throwable $ex) {
+  $hasLinksError = $ex;
+}
+if ($hasLinksError == null) { ?>
+
 <div class="mx-auto px-5 md:px-8 box-border w-full max-w-1440px">
     <div id="matecho-app-bar-large-label">
         <div class="flex flex-col" id="matecho-app-bar-large-label__inner">
@@ -183,4 +189,24 @@ $linksCount = count($links);
         </div>
     </mdui-dialog>
 <?php Matecho::commentAntiSpam($this);} ?>
+<?php } else { ?>
+    <div class="w-full border-box pt-20 text-center">
+        <div class="text-4xl">友链插件异常</div>
+        <div class="mt-2 opacity-70">请检查插件是否启用</div>
+    <?php if (defined("__TYPECHO_DEBUG__") && __TYPECHO_DEBUG__) { ?>
+        <pre class="text-left px-4">
+<?php echo htmlspecialchars(
+  get_class($hasLinksError) .
+    ": " .
+    $hasLinksError->getMessage() .
+    "\n" .
+    $hasLinksError->getTraceAsString(),
+  ENT_QUOTES,
+  "UTF-8"
+); ?>
+        </pre>
+    <?php } ?>
+    </div>
+<?php }
+?>
 <?php $this->need("footer.php"); ?>
