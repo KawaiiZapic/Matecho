@@ -429,19 +429,36 @@ class Matecho {
     return $ExSearch;
   }
 
-  static function Gravatar(string $mail, int $size = 40): void {
+  static function Gravatar(
+    string $mail,
+    int $size = 40,
+    bool $isComment = false
+  ): void {
     $options = Helper::options();
     $rating = $options->commentsAvatarRating;
-    $hash = md5(strtolower($mail));
+    // If it's not comment or comments avatar is enabled
+    if (!$isComment || $options->commentsAvatar) {
+      $hash = md5(strtolower(trim($mail)));
+    } else {
+      $hash = "000000000000000000000000000000000000000000000000000000";
+    }
     echo "$options->GravatarURL${hash}?s=${size}&d=mp&r=${rating}";
   }
 
-  static function GravatarSrcSet(string $mail, int $baseSize = 40): void {
+  static function GravatarSrcSet(
+    string $mail,
+    int $baseSize = 40,
+    bool $isComment = false
+  ): void {
     $options = Helper::options();
-    $rating = $options->commentsAvatarRating;
     $scales = [1, 2, 4];
-    $hash = md5(strtolower($mail));
     $baseUrl = $options->GravatarURL;
+    $rating = $options->commentsAvatarRating;
+    if (!$isComment || $options->commentsAvatar) {
+      $hash = md5(strtolower($mail));
+    } else {
+      $hash = "000000000000000000000000000000000000000000000000000000";
+    }
     $result = [];
     foreach ($scales as $scale) {
       $size = $baseSize * $scale;
@@ -711,10 +728,15 @@ class Matecho {
         <div class="w-full box-border matecho-comment-wrapper matecho-comment-parent" id="comment-<?php echo $comments->coid; ?>">
             <div class="flex items-center">
                 <mdui-avatar class="matecho-comment-avatar">
-                    <img src="<?php self::Gravatar($comments->mail, 40); ?>"
+                    <img src="<?php self::Gravatar(
+                      $comments->mail,
+                      40,
+                      true
+                    ); ?>"
                         srcset="<?php self::GravatarSrcSet(
                           $comments->mail,
-                          40
+                          40,
+                          true
                         ); ?>"
                     >
                 </mdui-avatar>
@@ -772,10 +794,15 @@ class Matecho {
             <div class="flex items-center">
                 <mdui-avatar class="matecho-comment-avatar w-28px h-28px flex-shrink-0">
                     <img
-                        src="<?php self::Gravatar($comments->mail, 28); ?>"
+                        src="<?php self::Gravatar(
+                          $comments->mail,
+                          28,
+                          true
+                        ); ?>"
                         srcset="<?php self::GravatarSrcSet(
                           $comments->mail,
-                          28
+                          28,
+                          true
                         ); ?>"
                     >
                 </mdui-avatar>
