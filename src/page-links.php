@@ -182,20 +182,5 @@ $linksCount = count($links);
             <mdui-button variant="tonal" id="matecho-links-add-submit">申请</mdui-button>
         </div>
     </mdui-dialog>
-    <?php if ($this->options->commentsAntiSpam) { ?>
-        <script type="text/javascript">
-            (function () {
-                ['scroll', 'mousemove', 'keyup', 'touchstart'].map(v =>
-                    document.addEventListener(v, function () {
-                        window.__MATECHO_ANTI_SPAM__ = <?php echo \Typecho\Common::shuffleScriptVar(
-                          $this->security->getToken(
-                            $this->request->getRequestUrl()
-                          )
-                        ); ?>
-                    }, { once: true, passive: true })
-                );
-            })();
-        </script>
-    <?php } ?>
-<?php } ?>
+<?php Matecho::commentAntiSpam($this);} ?>
 <?php $this->need("footer.php"); ?>

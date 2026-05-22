@@ -908,4 +908,22 @@ class Matecho {
     $links = $db->fetchAll($sql);
     return $links;
   }
+
+  static function commentAntiSpam(Archive $archive) {
+    if ($archive->options->commentsAntiSpam) { ?>
+      <script type="text/javascript">
+          (function () {
+              ['scroll', 'mousemove', 'keyup', 'touchstart'].map(v =>
+                  document.addEventListener(v, function () {
+                      window.__MATECHO_ANTI_SPAM__ = <?php echo \Typecho\Common::shuffleScriptVar(
+                        $archive->security->getToken(
+                          $archive->request->getRequestUrl()
+                        )
+                      ); ?>
+                  }, { once: true, passive: true })
+              );
+          })();
+      </script>
+    <?php }
+  }
 }
