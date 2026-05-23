@@ -10,8 +10,10 @@ use Utils\Helper;
 use Widget\Archive;
 
 function themeConfig(Form $form): void {
-  Matecho::generateThemeCSS();
   $options = Helper::options();
+  if ($options->ColorSchemeCache) {
+    Matecho::generateThemeCSS();
+  }
   ob_start();
   if ($options->pageSize % 12 != 0) { ?>
         <div>
@@ -25,6 +27,11 @@ function themeConfig(Form $form): void {
             <a href="/admin/options-discussion.php">修改设置</a>
         </div>
     <?php }
+  if ($options->ColorSchemeCache && !is_writable(__DIR__ . "/assets")) { ?>
+        <div>
+            <b>警告:</b> 已启用颜色主题样式缓存, 但主题目录不可写, 该功能将不起作用. 
+        </div>
+  <?php }
   if (!extension_loaded("curl")) { ?>
         <div>
             <b>警告:</b> 没有安装PHP cURL扩展, 无法使用代码实时运行功能. 
@@ -48,27 +55,15 @@ function themeConfig(Form $form): void {
       ""
     )
   );
-  if (!is_writable(__DIR__ . "/assets/color-scheme.css")) {
-    $form->addInput(
-      new Radio(
-        "ColorSchemeCache",
-        [0 => "禁用"],
-        0,
-        "颜色主题样式缓存",
-        "(无法写入缓存, 检查主题目录权限) 缓存主题样式到本地静态文件, 可以利用缓存加快网页加载速度."
-      )
-    );
-  } else {
-    $form->addInput(
-      new Radio(
-        "ColorSchemeCache",
-        [1 => "启用", 0 => "禁用"],
-        0,
-        "颜色主题样式缓存",
-        "缓存主题样式到本地静态文件, 可以利用缓存加快网页加载速度, 需要主题目录可写, 不需要持久化, 在文件不存在时自动生成."
-      )
-    );
-  }
+  $form->addInput(
+    new Radio(
+      "ColorSchemeCache",
+      [1 => "启用", 0 => "禁用"],
+      0,
+      "颜色主题样式缓存",
+      "缓存主题样式到本地静态文件, 可以利用缓存加快网页加载速度, 需要主题目录可写, 不需要持久化, 在文件不存在时自动生成."
+    )
+  );
   $form->addInput(
     new Radio(
       "EnableFancyBox",
@@ -207,7 +202,6 @@ function themeInit(Archive $context): void {
   Matecho::$LinkGithub = $options->LinkGithub ?? "";
   if (
     $options->ColorSchemeCache &&
-    $options->ColorScheme &&
     !file_exists(__DIR__ . "/assets/color-scheme.css")
   ) {
     Matecho::generateThemeCSS();
@@ -660,7 +654,9 @@ class Matecho {
 
   static function generateThemeCSS(): void {
     $css = Helper::options()->ColorSchemeCSS;
-    file_put_contents(__DIR__ . "/assets/color-scheme.css", $css);
+    if (strlen($css) > 0 && is_writable(__DIR__ . "/assets")) {
+      file_put_contents(__DIR__ . "/assets/color-scheme.css", $css);
+    }
   }
 
   static function themeCSS(): void {
