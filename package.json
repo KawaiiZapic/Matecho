@@ -72,5 +72,12 @@
       "prettier -w -u --cache"
     ]
   },
-  "version": "0.6.0"
+  "version": "0.6.0",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.2.2",
+      "onFail": "download"
+    }
+  }
 }
