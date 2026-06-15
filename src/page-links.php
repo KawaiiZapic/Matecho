@@ -52,7 +52,7 @@ if ($hasLinksError == null) { ?>
                                 <img class="w-full h-full object-contain matecho-link-avatar"
                                     src="<?php echo $link[
                                       "image"
-                                    ]; ?>" name="<?php echo $link["name"]; ?>">
+                                    ]; ?>" alt="<?php echo $link["name"]; ?>">
                             </mdui-avatar>
                         </div>
                         <div>
