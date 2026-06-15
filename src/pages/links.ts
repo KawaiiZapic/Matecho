@@ -6,6 +6,32 @@ import "virtual:components/page-links";
 import "@/style/links.less";
 import { sendComment } from "@/modules/Comment";
 
+interface LinkInfo {
+  name?: string;
+  url?: string;
+  avatar?: string;
+  description?: string;
+  email?: string;
+  __v: number;
+}
+class LinkSubmitEvent extends CustomEvent<LinkInfo> {
+  handler:
+    | (() => Promise<void | { success: boolean; message: string }>)
+    | null = null;
+  constructor(data: LinkInfo) {
+    super("x-link-submit", {
+      detail: data
+    });
+  }
+
+  handleEvent(
+    callback: () => Promise<void | { success: boolean; message: string }>
+  ) {
+    this.stopImmediatePropagation();
+    this.handler = callback;
+  }
+}
+
 const handleLinkAvatarLoading = () => {
   const img = document.querySelectorAll<HTMLImageElement>(
     "img.matecho-link-avatar"
@@ -118,6 +144,38 @@ const handleLinkApplication = () => {
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   submitBtn.addEventListener("click", async () => {
     if (!form.reportValidity()) return;
+    const submitEvent = new LinkSubmitEvent({
+      avatar: avatarUrl.value,
+      description: description.value,
+      email: mail.value,
+      name: author.value,
+      url: url.value,
+      __v: 1
+    });
+    window.dispatchEvent(submitEvent);
+    if (submitEvent.handler) {
+      try {
+        submitBtn.loading = true;
+        const result = await submitEvent.handler();
+        if (result) {
+          if (result.success) {
+            openSnackbar(result.message ?? "申请成功, 请等待审核");
+            dialog.open = false;
+          } else {
+            openSnackbar(result.message ?? "申请失败, 请稍后重试");
+          }
+        } else {
+          openSnackbar("申请成功, 请等待审核");
+          dialog.open = false;
+        }
+      } catch (e) {
+        console.error(e);
+        openSnackbar("无法发送申请, 外部错误");
+      } finally {
+        submitBtn.loading = false;
+      }
+      return;
+    }
     submitBtn.loading = true;
     const data = new FormData(form);
     data.delete("avatar-url");
@@ -134,10 +192,10 @@ const handleLinkApplication = () => {
         openSnackbar("申请成功, 请等待审核");
         dialog.open = false;
       } else {
-        openSnackbar(error || "无法发送申请, 请检查网络连接.");
+        openSnackbar(error || "无法发送申请, 请检查网络连接");
       }
     } catch (_) {
-      openSnackbar("无法发送申请, 请检查网络连接.");
+      openSnackbar("无法发送申请, 请检查网络连接");
     } finally {
       submitBtn.loading = false;
     }
@@ -195,10 +253,10 @@ const handleReplyApplication = () => {
         document.querySelector("#comment-" + currentReplyId)?.remove();
         openSnackbar("回复成功.");
       } else {
-        openSnackbar(error || "无法发送回复, 请检查网络连接.");
+        openSnackbar(error || "无法发送回复, 请检查网络连接");
       }
     } catch (_) {
-      openSnackbar("无法发送申请, 请检查网络连接.");
+      openSnackbar("无法发送申请, 请检查网络连接");
     } finally {
       submit.loading = false;
     }
