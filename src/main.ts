@@ -150,6 +150,11 @@ function initOnce() {
         const type = await signal.promise;
         const scripts = await loadPageScript(type);
         await cleanUpCb?.(oldEl as HTMLElement);
+        window.dispatchEvent(
+          new CustomEvent("x-page-unload", {
+            detail: { __v: 1 }
+          })
+        );
         oldEl.replaceWith(el);
         const wrapper =
           document.querySelector<HTMLDivElement>("#matecho-pjax-main");

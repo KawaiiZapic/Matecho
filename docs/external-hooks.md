@@ -1,13 +1,43 @@
 ## 外部插件挂钩
 
-主题实验性地实现了一套零厂商依赖的外部挂钩, 以便第三方插件接管主题内的部分功能.  
+主题在前端实验性地实现了一套零厂商依赖的JavaScript外部挂钩, 以便第三方插件接管主题内的部分功能, 而不需要知晓其内部实现.  
 零厂商依赖可以降低任意主题与任意插件之间的耦合, 即便用户不再使用某插件或者某主题, 或者未来需要进行破坏性的更改, 其余的组件也不会因为过耦合导致灾难性的错误.
+
+后端部分尚未设计挂钩.
 
 ### 载荷中的`__v`字段
 
 `__v`初始值为`1`, 仅在原有字段出现变更时或被删除时增加, 前向兼容的修改(即新增字段)不会增加此值.
 
 ## 已实现的挂钩列表
+
+### 已离开当前页面 (`x-page-unload`)
+
+#### 事件类型
+
+`CustomEvent<{__v: number}>`
+
+**`detail` 载荷：**
+
+| 字段  | 类型     | 说明                                 |
+| ----- | -------- | ------------------------------------ |
+| `__v` | `number` | 挂钩发起方版本, 预留确保跨版本兼容性 |
+
+#### 返回值
+
+_无返回值_
+
+#### 行为
+
+_此挂钩只能监听_
+
+#### 示例代码
+
+```javascript
+window.addEventListener("x-page-unload", e => {
+  // clean up
+});
+```
 
 ### 友情链接提交挂钩 (`x-link-submit`)
 
@@ -49,7 +79,7 @@
 #### 示例代码
 
 ```javascript
-window.addEventListener("x-link-submit", e => {
+const handler = e => {
   const { name, url, avatar, description, email, __v } = e.detail;
   if (__v !== 1) return;
 
@@ -67,5 +97,15 @@ window.addEventListener("x-link-submit", e => {
       return { success: false, message: data.error };
     }
   });
-});
+};
+window.addEventListener("x-link-submit", handler);
+
+// 务必在离开页面时清理监听器, 否则会造成重复监听或者内存泄露
+window.addEventListener(
+  "x-page-unload",
+  e => {
+    window.removeEventListener("x-link-submit", handler);
+  },
+  { once: true }
+);
 ```
