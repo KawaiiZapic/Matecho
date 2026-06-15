@@ -3,7 +3,19 @@
 主题在前端实验性地实现了一套零厂商依赖的JavaScript外部挂钩, 以便第三方插件接管主题内的部分功能, 而不需要知晓其内部实现.  
 零厂商依赖可以降低任意主题与任意插件之间的耦合, 即便用户不再使用某插件或者某主题, 或者未来需要进行破坏性的更改, 其余的组件也不会因为过耦合导致灾难性的错误.
 
+目前挂钩功能处于实验性阶段, 虽然预期上来说未来正式发布时不会具有太大的区别, 但是由于没有得到广泛支持, 在实践过程中仍然会带来不可避免的修改.
+
 后端部分尚未设计挂钩.
+
+### 确保主题支持挂钩
+
+挂钩主要通过事件监听实现, 若在主题不支持挂钩的情况下注册挂钩会导致内存泄漏, 因此在注册任意挂钩前需要检查主题是否声明自己兼容挂钩.  
+主题通过在头部添加`<meta name="x-support-hook" content="yes">`声明自己支持挂钩系统, 但注意, 即使主题自己声明支持挂钩, 也可能不会实现所有挂钩, 因此某些事件并不会被触发.
+
+```javascript
+if (!document.querySelector('meta[name="x-support-hook"][content="yes"]'))
+  return;
+```
 
 ### 载荷中的`__v`字段
 
@@ -12,6 +24,8 @@
 ## 已实现的挂钩列表
 
 ### 已离开当前页面 (`x-page-unload`)
+
+在离开当前页面时被触发, 以便外部插件执行必要的清理动作.
 
 #### 事件类型
 
@@ -79,6 +93,8 @@ window.addEventListener("x-page-unload", e => {
 #### 示例代码
 
 ```javascript
+if (!document.querySelector('meta[name="x-support-hook"][content="yes"]'))
+  return;
 const handler = e => {
   const { name, url, avatar, description, email, __v } = e.detail;
   if (__v !== 1) return;
