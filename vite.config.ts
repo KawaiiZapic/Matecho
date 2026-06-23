@@ -6,6 +6,7 @@ import Matecho, { type MatechoBuildOptions } from "./plugins/Matecho";
 import PrismJS from "./plugins/Prism";
 import UnoCSSClassMangle from "./plugins/UnoCSSClassMangle";
 import fs from "node:fs";
+import zlib from "node:zlib";
 import packageJson from "./package.json";
 
 export default defineConfig(async env => {
@@ -45,12 +46,29 @@ export default defineConfig(async env => {
         .readFileSync(__dirname + "/.git/refs/tags/v" + packageJson.version)
         .toString("utf-8")
         .trim();
-      if (tag == id) COMMIT_ID = packageJson.version;
-    } catch (_) {
+      if (tag == id) {
+        COMMIT_ID = packageJson.version;
+      } else {
+        const ref = zlib
+          .inflateSync(
+            fs.readFileSync(
+              __dirname +
+                "/.git/objects/" +
+                tag.substring(0, 2) +
+                "/" +
+                tag.substring(2)
+            )
+          )
+          .toString("utf-8");
+        if (ref.includes(id)) {
+          COMMIT_ID = packageJson.version;
+        }
+      }
+    } catch {
       /**/
     }
     console.log("Current head @ " + COMMIT_ID);
-  } catch (_) {
+  } catch {
     /**/
   }
 
